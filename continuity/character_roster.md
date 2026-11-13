@@ -7,4 +7,6 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 
 | Character (Burmese) | Romanized | Type / Archetype | Key Traits | Story ID | Category |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| *Example: ဖိုးလပြည့်* | *Phoe La Pyae* | *Human (Child)* | *Curious, stubborn, honest* | *BS-001* | *children* |
+| **ဖိုးတိုး** | Phoe Toe | Animal (Small bird) | Curious, determined, optimistic, resourceful | `BS-001` | `children` |
+| **ဉာဏ်ကြီး** | Nyan Gyi | Animal (Elder tortoise) | Wise, quiet, pragmatic, observant | `BS-001` | `children` |
+| **မင်းနောင်** | Min Naung | Animal (Golden eagle) | Proud, skeptical, powerful, conventional | `BS-001` | `children` |

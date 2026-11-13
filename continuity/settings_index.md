@@ -7,4 +7,4 @@ Cycle settings regularly (forest, village, river, lake, mountain, farmland, city
 
 | Setting Name (Burmese) | Type | Atmosphere / Details | Story ID | Category |
 | :--- | :--- | :--- | :--- | :--- |
-| *Example: ရွှေမြစ်ကမ်းနားရွာ* | *Riverbank village* | *Fishing community during monsoon* | *BS-001* | *children* |
+| **တောင်နီတန်းသစ်တောနှင့် ရွှေစမ်းချောင်း** | Mountain forest & dried stream | Arid summer drought, red rocky hills, high cloud peaks | `BS-001` | `children` |
