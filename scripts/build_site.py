@@ -429,9 +429,11 @@ function setTheme(theme) {
   localStorage.setItem('burmese_stories_theme', theme);
 }
 
-function filterCategory(cat) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+function filterCategory(cat, btn) {
+  if (btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
   document.querySelectorAll('.story-card').forEach(card => {
     if (cat === 'all' || card.getAttribute('data-category') === cat) {
       card.style.display = 'flex';
@@ -455,6 +457,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedSize) {
     document.documentElement.style.setProperty('--font-size', savedSize + 'rem');
   }
+  // Ensure all story cards are visible on initial load
+  document.querySelectorAll('.story-card').forEach(c => c.style.display = 'flex');
 });
 """
 
@@ -490,6 +494,9 @@ def generate_catalog_html(stories):
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>မြန်မာပုံပြင်များ — Burmese Stories Collection</title>
   <meta name="description" content="ကလေးလူငယ်များနှင့် မိဘဆရာများအတွက် အသိပညာပေး မူရင်းမြန်မာပုံပြင်များ">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -499,7 +506,7 @@ def generate_catalog_html(stories):
 </head>
 <body>
   <header>
-    <a href="index.html" class="brand-link">📖 မြန်မာပုံပြင်များ</a>
+    <a href="./" class="brand-link">📖 မြန်မာပုံပြင်များ</a>
     <div style="display: flex; gap: 12px; align-items: center;">
       <a href="https://t.me/stellarpub_official" target="_blank" class="telegram-pill">
         <span>📢 @stellarpub_official</span>
@@ -519,10 +526,10 @@ def generate_catalog_html(stories):
     </div>
 
     <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterCategory('all')">အားလုံး ({len(stories)})</button>
-      <button class="filter-btn" onclick="filterCategory('children')">ကလေးပုံပြင်များ</button>
-      <button class="filter-btn" onclick="filterCategory('folklore')">ရိုးရာနှင့် ဒဏ္ဍာရီများ</button>
-      <button class="filter-btn" onclick="filterCategory('contemporary')">ခေတ်ပေါ်ပုံပြင်များ</button>
+      <button class="filter-btn active" onclick="filterCategory('all', this)">အားလုံး ({len(stories)})</button>
+      <button class="filter-btn" onclick="filterCategory('children', this)">ကလေးပုံပြင်များ</button>
+      <button class="filter-btn" onclick="filterCategory('folklore', this)">ရိုးရာနှင့် ဒဏ္ဍာရီများ</button>
+      <button class="filter-btn" onclick="filterCategory('contemporary', this)">ခေတ်ပေါ်ပုံပြင်များ</button>
     </div>
 
     <div class="story-grid">
@@ -548,6 +555,9 @@ def generate_story_html(story):
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>{meta.get('title_my', '')} — မြန်မာပုံပြင်များ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -556,7 +566,7 @@ def generate_story_html(story):
 </head>
 <body>
   <header>
-    <a href="../index.html" class="brand-link">← ပုံပြင်များသို့ ပြန်သွားရန်</a>
+    <a href="../" class="brand-link">← ပုံပြင်များသို့ ပြန်သွားရန်</a>
     <div style="display: flex; gap: 8px; align-items: center;">
       <button class="font-btn" onclick="adjustFontSize(-0.1)">A-</button>
       <button class="font-btn" onclick="adjustFontSize(0.1)">A+</button>
@@ -586,7 +596,7 @@ def generate_story_html(story):
     </div>
 
     <div class="reader-footer">
-      <a href="../index.html" class="btn-pdf">← ပုံပြင်အားလုံး ကြည့်ရှုရန်</a>
+      <a href="../" class="btn-pdf">← ပုံပြင်အားလုံး ကြည့်ရှုရန်</a>
       <div style="display: flex; gap: 10px;">
         <a href="../pdf/{pdf_filename}" class="btn-pdf" download>📄 A4 Print PDF ဒေါင်းလုဒ်</a>
         <a href="https://t.me/stellarpub_official" target="_blank" class="telegram-pill">📢 @stellarpub_official</a>
