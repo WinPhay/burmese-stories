@@ -44,6 +44,8 @@ Whenever drafting, expanding, or revising a story:
 - `continuity/` — Anti-repetition logs (`lessons_matrix.md`, `character_roster.md`, `settings_index.md`).
 - `templates/` — Authoring templates (`story_template.md`).
 - `assets/illustrations/` — Story-matched visual assets (`BS-###-<slug>.png`).
+- `scripts/` — Automated publication suite (`build_site.py`, `build_pdf.py`, `build_social.py`, `build_all.py`).
+- `.github/workflows/` — Automated GitHub Pages deployment pipeline (`deploy-pages.yml`).
 
 ---
 

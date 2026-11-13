@@ -6,13 +6,29 @@
 
 ## 1. Catalog & Reading Guide
 
-ပုံပြင်အားလုံးကို [CATALOG.md](CATALOG.md) တွင် အစဉ်လိုက် စနစ်တကျ ကြည့်ရှုနိုင်ပါသည်။
+- **Live Web Reader**: [https://winphay.github.io/burmese-stories/](https://winphay.github.io/burmese-stories/)
+- **Official Telegram Channel**: [@stellarpub_official](https://t.me/stellarpub_official)
+- **Master Index**: [CATALOG.md](CATALOG.md)
 
 | ကဏ္ဍ (Category) | ဖော်ပြချက် | လမ်းကြောင်း (Path) |
 | :--- | :--- | :--- |
 | **ကလေးပုံပြင်များ** | အသက် ၄ နှစ်မှ ၁၀ နှစ်အရွယ် ကလေးများအတွက် ဖတ်ရလွယ်ကူပြီး နွေးထွေးသော သင်ခန်းစာပေးပုံပြင်များ | [`stories/children/`](stories/children/) |
 | **ရိုးရာနှင့် ဒဏ္ဍာရီများ** | မြန်မာ့ရိုးရာ ယဉ်ကျေးမှု၊ ဒဏ္ဍာရီနှင့် သဘာဝအခြေပြု ပုံပြင်များ | [`stories/folklore/`](stories/folklore/) |
 | **ခေတ်ပေါ်ပုံပြင်များ** | ခေတ်သစ်လူမှုဘဝ၊ အတွေးအခေါ်နှင့် လူငယ်/လူကြီးများအတွက် တင်စားပုံပြင်များ | [`stories/contemporary/`](stories/contemporary/) |
+
+---
+
+## 2. Publication Suite (3-in-1 Engine)
+
+ဤ repository တွင် အောက်ပါ ထုတ်ဝေမှုစနစ်များကို အလိုအလျောက် ထုတ်လုပ်နိုင်သည့် tool များ ထည့်သွင်းထားပါသည်:
+1. **Web Reader (PWA)**: GitHub Pages ပေါ်တွင် အလိုအလျောက် deploy ဖြစ်သည့် static reader (`scripts/build_site.py`).
+2. **Print-ready A4 PDF**: စာအုပ်ထုတ်ဝေရန်နှင့် ကလေးများအတွက် print ထုတ်နိုင်သော landscape PDF များ (`scripts/build_pdf.py`).
+3. **Social Media Kit**: Telegram (@stellarpub_official) နှင့် Facebook အတွက် ၁၀၈၀x၁၀၈၀ carousel cards နှင့် စာသားများ (`scripts/build_social.py`).
+
+တစ်ချက်တည်းဖြင့် အားလုံး build လုပ်ရန်:
+```bash
+python3 scripts/build_all.py
+```
 
 ---
 
