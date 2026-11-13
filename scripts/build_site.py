@@ -81,15 +81,21 @@ def render_markdown_to_html(body):
     # Remove image tag from body since it will be rendered in the header
     clean_body = re.sub(r"!\[.*?\]\(.*?\)", "", body)
     
-    # Render headers
+    # Strip any explicit structural beat headers (e.g., ## ၁။ အစပျိုးခြင်း, ## ၂။ ဖြစ်စဉ်ပျိုးခြင်း)
+    clean_body = re.sub(r"^##\s*[၀-၉\d]+[။\.\)]\s*.*$", "", clean_body, flags=re.MULTILINE)
+    clean_body = re.sub(r"^---\s*$", "", clean_body, flags=re.MULTILINE)
+    
+    # Remove top title # Title
     clean_body = re.sub(r"^#\s+(.+)$", r"<!-- title -->", clean_body, flags=re.MULTILINE)
-    clean_body = re.sub(r"^##\s+(.+)$", r'<h2 class="section-title">\1</h2>', clean_body, flags=re.MULTILINE)
     
     # Render moral section
     def moral_sub(m):
         return f'<div class="moral-box"><div class="moral-label">သင်ခန်းစာ</div><div class="moral-content">{m.group(1).strip()}</div></div>'
     
-    clean_body = re.sub(r'<h2 class="section-title">သင်ခန်းစာ</h2>\s*(.*?)(?=\n<h2|$)', moral_sub, clean_body, flags=re.DOTALL)
+    clean_body = re.sub(r'^##\s+သင်ခန်းစာ\s*\n*(.*?)(?=\n##|$)', moral_sub, clean_body, flags=re.DOTALL | re.MULTILINE)
+    
+    # Render any other legitimate h2 headers
+    clean_body = re.sub(r"^##\s+(.+)$", r'<h2 class="section-title">\1</h2>', clean_body, flags=re.MULTILINE)
     
     # Split paragraphs
     paragraphs = []
@@ -461,7 +467,7 @@ def generate_catalog_html(stories):
         cat_color = CATEGORY_COLORS.get(cat_key, "#333")
         
         pdf_filename = f"{s['slug']}.pdf" if s['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{s['slug']}.pdf"
-    cards_html.append(f"""
+        cards_html.append(f"""
         <div class="story-card" data-category="{cat_key}">
           <div class="card-img-wrapper">
             <span class="card-badge" style="background: {cat_color}">{cat_name}</span>

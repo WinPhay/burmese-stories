@@ -235,7 +235,6 @@ p {{
     for b_title, b_text in beats:
         if "သင်ခန်းစာ" in b_title:
             continue
-        html_content += f'<div class="beat-title">{b_title}</div>\n'
         for p in b_text.split("\n"):
             p = p.strip()
             if p:
