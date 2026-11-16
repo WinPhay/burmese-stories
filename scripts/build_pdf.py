@@ -81,6 +81,9 @@ def build_pdf_for_story(md_path, chromium_bin):
     if current_title or current_paras:
         beats.append((current_title, "\n".join(current_paras)))
 
+    author_escaped = author.replace('"', '\\"').replace("'", "\\'")
+    footer_text = f"© 2026 {author_escaped} / StellarPub (@stellarpub_official) • CC BY-NC-ND 4.0 • {created_at}"
+
     # Generate print HTML
     html_content = f"""<!DOCTYPE html>
 <html>
@@ -89,7 +92,23 @@ def build_pdf_for_story(md_path, chromium_bin):
 <style>
 @page {{
   size: A4 landscape;
-  margin: 12mm 15mm;
+  margin: 14mm 18mm 14mm 18mm;
+  @bottom-left {{
+    content: "{footer_text}";
+    font-family: "Noto Sans Myanmar", "Pyidaungsu", sans-serif;
+    font-size: 8pt;
+    color: #94a3b8;
+  }}
+  @bottom-right {{
+    content: counter(page) " / " counter(pages);
+    font-family: "Noto Sans Myanmar", "Pyidaungsu", sans-serif;
+    font-size: 8pt;
+    color: #94a3b8;
+  }}
+}}
+@page :first {{
+  @bottom-left {{ content: ""; }}
+  @bottom-right {{ content: ""; }}
 }}
 body {{
   font-family: "Noto Sans Myanmar", "Pyidaungsu", sans-serif;
@@ -100,39 +119,31 @@ body {{
   line-height: 1.85;
 }}
 
-.page {{
-  position: relative;
-  width: 100%;
-  height: 180mm;
-  page-break-after: always;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-  overflow: hidden;
-}}
-
 .pdf-watermark {{
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-25deg);
   font-size: 38pt;
   font-weight: 800;
-  color: rgba(140, 150, 165, 0.07);
+  color: rgba(140, 150, 165, 0.06);
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
   letter-spacing: 5px;
-  z-index: 0;
+  z-index: -1;
 }}
 
 /* Page 1: Cover */
 .cover-page {{
+  page-break-after: always;
+  break-after: page;
+  height: 175mm;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 24px;
+  box-sizing: border-box;
 }}
 .cover-img-box {{
   width: 55%;
@@ -183,24 +194,17 @@ h1 {{
   margin-bottom: 12px;
 }}
 
-/* Page 2: Story Reading */
+/* Narrative Pages */
 .story-page {{
   columns: 2;
-  column-gap: 30px;
-  font-size: 11.5pt;
+  column-gap: 32px;
+  font-size: 11pt;
   text-align: justify;
 }}
-.beat-title {{
-  font-size: 13pt;
-  color: #b35900;
-  margin: 10px 0 6px 0;
-  break-after: avoid;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 4px;
-}}
 p {{
-  margin: 0 0 12px 0;
+  margin: 0 0 13px 0;
   line-height: 1.85;
+  text-indent: 1.5em;
 }}
 
 /* Moral Section */
@@ -218,21 +222,12 @@ p {{
   font-size: 12pt;
   margin-bottom: 4px;
 }}
-
-.footer {{
-  font-size: 9pt;
-  color: #94a3b8;
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid #e2e8f0;
-  padding-top: 6px;
-}}
 </style>
 </head>
 <body>
 
 <!-- Cover Page -->
-<div class="page cover-page">
+<div class="cover-page">
   <div class="cover-img-box">
     <img src="{img_url}" />
   </div>
@@ -250,10 +245,9 @@ p {{
   </div>
 </div>
 
-<!-- Narrative Page -->
-<div class="page">
-  <div class="pdf-watermark">{author} • StellarPub</div>
-  <div class="story-page">
+<!-- Narrative Page Flow -->
+<div class="pdf-watermark">{author} • StellarPub</div>
+<div class="story-page">
 """
 
     for b_title, b_text in beats:
@@ -270,11 +264,6 @@ p {{
       <div style="font-size: 11pt; line-height: 1.7;">{lesson}</div>
     </div>
   </div>
-  <div class="footer">
-    <span>© 2026 {author} / StellarPub (@stellarpub_official) • CC BY-NC-ND 4.0 • စာရေးသူ: {author} ({created_at})</span>
-    <span>Burmese Stories • https://winphay.github.io/burmese-stories/</span>
-  </div>
-</div>
 
 </body>
 </html>
@@ -290,6 +279,7 @@ p {{
         "--headless",
         "--disable-gpu",
         "--no-sandbox",
+        "--no-pdf-header-footer",
         f"--print-to-pdf={out_pdf}",
         str(temp_html)
     ]
