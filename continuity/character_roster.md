@@ -14,3 +14,6 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 | **ဦးငွေမှုံ** | U Ngwe Hmon | Human (Timber merchant / Elder) | Rigid, proud, wealthy, authoritative | `BS-002` | `folklore` |
 | **ဖိုးသက်** | Phoe Thet | Human (Courier / Youth) | Hardworking, rushed, conscientious, reflective | `BS-003` | `contemporary` |
 | **ဗီဇာ-၇** | Visa-7 | Robotic / Automaton (Street cleaner) | Dutiful, disciplined, programmatically honest | `BS-003` | `contemporary` |
+| **တူးတူး** | Tu Tu | Animal (Scout bee) | Observant, agile, open-minded, cooperative | `BS-004` | `children` |
+| **ဖိုးနီ** | Phoe Ni | Animal (Red ant leader) | Disciplined, strong, pragmatic, grounded | `BS-004` | `children` |
+| **ဦးကျိုင်း** | U Kyaing | Animal (Praying mantis / Elder) | Traditional, skeptical, rigid, aloof | `BS-004` | `children` |
