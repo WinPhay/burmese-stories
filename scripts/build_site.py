@@ -148,12 +148,14 @@ BASE_CSS = """
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+img { max-width: 100%; height: auto; }
 body {
   font-family: "Noto Sans Myanmar", "Pyidaungsu", -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-main);
   line-height: 1.8;
   transition: background-color 0.3s, color 0.3s;
+  -webkit-text-size-adjust: 100%;
 }
 
 header {
@@ -162,21 +164,33 @@ header {
   z-index: 100;
   background: var(--header-bg);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
-  padding: 16px 24px;
+  padding: 14px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .brand-link {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--accent-color);
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .telegram-pill {
@@ -191,12 +205,14 @@ header {
   align-items: center;
   gap: 6px;
   transition: transform 0.2s;
+  white-space: nowrap;
+  touch-action: manipulation;
 }
 .telegram-pill:hover { transform: scale(1.04); }
 
 .theme-toggles {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
@@ -208,45 +224,57 @@ header {
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
+  min-height: 36px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
 }
 
 .container {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 32px 20px 80px 20px;
+  padding: 28px 16px 80px 16px;
 }
 
 .hero {
   text-align: center;
-  padding: 32px 0 40px;
+  padding: 24px 0 32px;
 }
 .hero h1 {
-  font-size: 2.2rem;
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
   color: var(--accent-color);
   margin-bottom: 8px;
+  line-height: 1.35;
 }
 .hero p {
   color: var(--text-muted);
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .filter-bar {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 36px;
+  gap: 8px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
 }
 .filter-btn {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-muted);
-  padding: 8px 18px;
+  padding: 6px 14px;
   border-radius: 24px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: all 0.2s;
+  touch-action: manipulation;
+  white-space: nowrap;
 }
 .filter-btn.active, .filter-btn:hover {
   background: var(--accent-color);
@@ -256,8 +284,8 @@ header {
 
 .story-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 24px;
 }
 
 .story-card {
@@ -302,19 +330,21 @@ header {
   padding: 4px 10px;
   border-radius: 12px;
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .card-body {
-  padding: 20px;
+  padding: 18px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .card-body h3 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   margin-bottom: 8px;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .card-meta {
@@ -344,6 +374,11 @@ header {
   border-radius: 8px;
   text-align: center;
   font-weight: bold;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
 }
 .btn-pdf {
   background: var(--bg-primary);
@@ -353,42 +388,60 @@ header {
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 0.9rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 42px;
+  touch-action: manipulation;
 }
 
 /* Reader Page Specific */
 .reader-container {
   max-width: 780px;
   margin: 0 auto;
-  padding: 32px 20px 80px;
+  padding: 24px 16px 80px 16px;
 }
 
 .reader-header {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+}
+
+.reader-title {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  color: var(--accent-color);
+  margin: 14px 0 8px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.reader-meta {
+  color: var(--text-muted);
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  margin-bottom: 20px;
 }
 
 .reader-cover {
   width: 100%;
   border-radius: 16px;
   box-shadow: var(--shadow-md);
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   max-height: 480px;
   object-fit: cover;
 }
 
 .reader-content p {
   font-size: var(--font-size, 1.15rem);
-  line-height: 2.1;
-  margin-bottom: 24px;
-  text-align: justify;
+  line-height: 2.05;
+  margin-bottom: 22px;
+  text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .section-title {
-  font-size: 1.35rem;
+  font-size: clamp(1.2rem, 3vw, 1.35rem);
   color: var(--accent-color);
-  margin: 36px 0 16px;
+  margin: 32px 0 16px;
   padding-bottom: 8px;
   border-bottom: 2px dashed var(--border-color);
 }
@@ -396,9 +449,9 @@ header {
 .moral-box {
   background: rgba(211, 84, 0, 0.08);
   border-left: 5px solid var(--accent-color);
-  padding: 24px;
+  padding: 20px;
   border-radius: 12px;
-  margin: 40px 0;
+  margin: 32px 0;
 }
 .moral-label {
   font-weight: bold;
@@ -407,19 +460,106 @@ header {
   margin-bottom: 8px;
 }
 .moral-content {
-  font-size: 1.15rem;
-  line-height: 1.9;
+  font-size: var(--font-size, 1.15rem);
+  line-height: 1.95;
+  text-align: left;
+  word-break: break-word;
 }
 
 .reader-footer {
-  margin-top: 48px;
-  padding-top: 24px;
+  margin-top: 40px;
+  padding-top: 20px;
   border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 14px;
+}
+
+.reader-footer-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Mobile Breakpoints & Responsive Adaptations */
+@media (max-width: 680px) {
+  header {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  .brand-link {
+    font-size: 1.05rem;
+  }
+  .header-actions {
+    gap: 6px;
+  }
+  .telegram-pill span {
+    display: none;
+  }
+  .telegram-pill::after {
+    content: "📢 Channel";
+  }
+  .telegram-pill {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+  .theme-btn, .font-btn {
+    padding: 4px 8px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 0.85rem;
+  }
+  .story-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .btn-read, .btn-pdf {
+    width: 100%;
+    text-align: center;
+  }
+  .reader-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .reader-footer .btn-pdf {
+    width: 100%;
+    text-align: center;
+  }
+  .reader-footer-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .reader-footer-actions .btn-pdf,
+  .reader-footer-actions .telegram-pill {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 440px) {
+  .brand-link {
+    font-size: 0.95rem;
+  }
+  .telegram-pill::after {
+    content: "📢";
+  }
+  .theme-toggles {
+    gap: 4px;
+  }
+  .filter-btn {
+    padding: 5px 10px;
+    font-size: 0.82rem;
+  }
+  .moral-box {
+    padding: 16px;
+  }
 }
 """
 
@@ -507,14 +647,14 @@ def generate_catalog_html(stories):
 <body>
   <header>
     <a href="./" class="brand-link">📖 မြန်မာပုံပြင်များ</a>
-    <div style="display: flex; gap: 12px; align-items: center;">
+    <div class="header-actions">
       <a href="https://t.me/stellarpub_official" target="_blank" class="telegram-pill">
         <span>📢 @stellarpub_official</span>
       </a>
       <div class="theme-toggles">
-        <button class="theme-btn" onclick="setTheme('light')">☀️</button>
-        <button class="theme-btn" onclick="setTheme('sepia')">📜</button>
-        <button class="theme-btn" onclick="setTheme('dark')">🌙</button>
+        <button class="theme-btn" onclick="setTheme('light')" title="Light mode">☀️</button>
+        <button class="theme-btn" onclick="setTheme('sepia')" title="Sepia mode">📜</button>
+        <button class="theme-btn" onclick="setTheme('dark')" title="Dark mode">🌙</button>
       </div>
     </div>
   </header>
@@ -567,13 +707,13 @@ def generate_story_html(story):
 <body>
   <header>
     <a href="../" class="brand-link">← ပုံပြင်များသို့ ပြန်သွားရန်</a>
-    <div style="display: flex; gap: 8px; align-items: center;">
-      <button class="font-btn" onclick="adjustFontSize(-0.1)">A-</button>
-      <button class="font-btn" onclick="adjustFontSize(0.1)">A+</button>
+    <div class="header-actions">
+      <button class="font-btn" onclick="adjustFontSize(-0.1)" title="Smaller font">A-</button>
+      <button class="font-btn" onclick="adjustFontSize(0.1)" title="Larger font">A+</button>
       <div class="theme-toggles">
-        <button class="theme-btn" onclick="setTheme('light')">☀️</button>
-        <button class="theme-btn" onclick="setTheme('sepia')">📜</button>
-        <button class="theme-btn" onclick="setTheme('dark')">🌙</button>
+        <button class="theme-btn" onclick="setTheme('light')" title="Light mode">☀️</button>
+        <button class="theme-btn" onclick="setTheme('sepia')" title="Sepia mode">📜</button>
+        <button class="theme-btn" onclick="setTheme('dark')" title="Dark mode">🌙</button>
       </div>
     </div>
   </header>
@@ -583,8 +723,8 @@ def generate_story_html(story):
       <span style="background: {cat_color}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">
         {cat_name}
       </span>
-      <h1 style="font-size: 2.2rem; color: var(--accent-color); margin: 16px 0 8px;">{meta.get('title_my', '')}</h1>
-      <div style="color: var(--text-muted); font-size: 1rem; margin-bottom: 24px;">
+      <h1 class="reader-title">{meta.get('title_my', '')}</h1>
+      <div class="reader-meta">
         {meta.get('title_en', '')} • {meta.get('target_audience', 'All Ages')}
       </div>
     </div>
@@ -597,7 +737,7 @@ def generate_story_html(story):
 
     <div class="reader-footer">
       <a href="../" class="btn-pdf">← ပုံပြင်အားလုံး ကြည့်ရှုရန်</a>
-      <div style="display: flex; gap: 10px;">
+      <div class="reader-footer-actions">
         <a href="../pdf/{pdf_filename}" class="btn-pdf" download>📄 A4 Print PDF ဒေါင်းလုဒ်</a>
         <a href="https://t.me/stellarpub_official" target="_blank" class="telegram-pill">📢 @stellarpub_official</a>
       </div>
