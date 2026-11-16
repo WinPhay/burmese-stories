@@ -333,6 +333,81 @@ header {
   -webkit-backdrop-filter: blur(4px);
 }
 
+.btn-card-bookmark {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 2;
+  touch-action: manipulation;
+}
+.btn-card-bookmark:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.1);
+}
+.btn-card-bookmark.bookmarked {
+  color: #f59e0b;
+  background: rgba(15, 23, 42, 0.85);
+  border-color: #f59e0b;
+}
+
+.card-read-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(16, 185, 129, 0.95);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.bookmark-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  touch-action: manipulation;
+  transition: all 0.2s;
+}
+.bookmark-btn:hover {
+  border-color: var(--accent-color);
+}
+.bookmark-btn.bookmarked {
+  color: #d97706;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: #f59e0b;
+}
+[data-theme="dark"] .bookmark-btn.bookmarked {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.2);
+}
+
 .card-body {
   padding: 18px;
   flex: 1;
@@ -561,6 +636,15 @@ header {
     min-height: 32px;
     font-size: 0.85rem;
   }
+  .bookmark-btn .bookmark-text {
+    display: none;
+  }
+  .bookmark-btn {
+    padding: 4px 8px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 0.85rem;
+  }
   .story-grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -618,25 +702,143 @@ function setTheme(theme) {
   localStorage.setItem('burmese_stories_theme', theme);
 }
 
-function filterCategory(cat, btn) {
+function adjustFontSize(delta) {
+  let size = parseFloat(localStorage.getItem('burmese_stories_fontsize') || 1.15);
+  size = Math.min(Math.max(size + delta, 0.9), 1.6);
+  size = Math.round(size * 100) / 100;
+  document.documentElement.style.setProperty('--font-size', size + 'rem');
+  localStorage.setItem('burmese_stories_fontsize', size);
+}
+
+function getStoredArray(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function setStoredArray(key, arr) {
+  localStorage.setItem(key, JSON.stringify(arr));
+}
+
+function toggleBookmark(storyId, event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  let bookmarks = getStoredArray('bs_bookmarks');
+  const idx = bookmarks.indexOf(storyId);
+  if (idx >= 0) {
+    bookmarks.splice(idx, 1);
+  } else {
+    bookmarks.push(storyId);
+  }
+  setStoredArray('bs_bookmarks', bookmarks);
+  syncUI();
+
+  const activeBtn = document.querySelector('.filter-btn.active');
+  if (activeBtn && activeBtn.id === 'filter-btn-bookmarks') {
+    filterStories('bookmarks', activeBtn);
+  }
+}
+
+function markAsRead(storyId) {
+  let readList = getStoredArray('bs_read');
+  if (!readList.includes(storyId)) {
+    readList.push(storyId);
+    setStoredArray('bs_read', readList);
+  }
+}
+
+function filterStories(filterType, btn) {
   if (btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
+  const bookmarks = getStoredArray('bs_bookmarks');
+  const readList = getStoredArray('bs_read');
+  let visibleCount = 0;
+
   document.querySelectorAll('.story-card').forEach(card => {
-    if (cat === 'all' || card.getAttribute('data-category') === cat) {
+    const cat = card.getAttribute('data-category');
+    const id = card.getAttribute('data-id');
+    let show = false;
+
+    if (filterType === 'all') {
+      show = true;
+    } else if (filterType === 'bookmarks') {
+      show = bookmarks.includes(id);
+    } else if (filterType === 'unread') {
+      show = !readList.includes(id);
+    } else if (filterType === 'read') {
+      show = readList.includes(id);
+    } else if (cat === filterType) {
+      show = true;
+    }
+
+    if (show) {
       card.style.display = 'flex';
+      visibleCount++;
     } else {
       card.style.display = 'none';
     }
   });
+
+  const emptyMsg = document.getElementById('empty-filter-msg');
+  if (emptyMsg) {
+    emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
 }
 
-function adjustFontSize(delta) {
-  let size = parseFloat(localStorage.getItem('burmese_stories_fontsize') || 1.15);
-  size = Math.min(Math.max(size + delta, 0.9), 1.6);
-  document.documentElement.style.setProperty('--font-size', size + 'rem');
-  localStorage.setItem('burmese_stories_fontsize', size);
+function filterCategory(cat, btn) {
+  filterStories(cat, btn);
+}
+
+function syncUI() {
+  const bookmarks = getStoredArray('bs_bookmarks');
+  const readList = getStoredArray('bs_read');
+
+  document.querySelectorAll('.story-card').forEach(card => {
+    const id = card.getAttribute('data-id');
+    const bmBtn = card.querySelector('.btn-card-bookmark');
+    if (bmBtn) {
+      if (bookmarks.includes(id)) {
+        bmBtn.classList.add('bookmarked');
+        bmBtn.innerHTML = '★';
+        bmBtn.setAttribute('title', 'မှတ်သားထားပြီး (ဖယ်ရှားရန် နှိပ်ပါ)');
+      } else {
+        bmBtn.classList.remove('bookmarked');
+        bmBtn.innerHTML = '☆';
+        bmBtn.setAttribute('title', 'မှတ်သားထားမည်');
+      }
+    }
+    const readBadge = card.querySelector('.card-read-badge');
+    if (readBadge) {
+      readBadge.style.display = readList.includes(id) ? 'inline-block' : 'none';
+    }
+  });
+
+  const countSpan = document.getElementById('bookmark-count');
+  if (countSpan) {
+    countSpan.textContent = bookmarks.length;
+  }
+
+  const readerBtn = document.getElementById('reader-bookmark-btn');
+  if (readerBtn) {
+    const storyId = readerBtn.getAttribute('data-id');
+    const icon = document.getElementById('reader-star-icon');
+    const text = readerBtn.querySelector('.bookmark-text');
+    if (bookmarks.includes(storyId)) {
+      readerBtn.classList.add('bookmarked');
+      if (icon) icon.textContent = '★';
+      if (text) text.textContent = 'မှတ်သားပြီး';
+    } else {
+      readerBtn.classList.remove('bookmarked');
+      if (icon) icon.textContent = '☆';
+      if (text) text.textContent = 'မှတ်သားမည်';
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -646,8 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedSize) {
     document.documentElement.style.setProperty('--font-size', savedSize + 'rem');
   }
-  // Ensure all story cards are visible on initial load
-  document.querySelectorAll('.story-card').forEach(c => c.style.display = 'flex');
+  syncUI();
 });
 """
 
@@ -655,6 +856,7 @@ def generate_catalog_html(stories):
     cards_html = []
     for s in stories:
         meta = s["meta"]
+        story_id = meta.get("id", s["slug"])
         cat_key = s["category"]
         cat_name = CATEGORY_NAMES.get(cat_key, cat_key)
         cat_color = CATEGORY_COLORS.get(cat_key, "#333")
@@ -663,9 +865,11 @@ def generate_catalog_html(stories):
         
         pdf_filename = f"{s['slug']}.pdf" if s['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{s['slug']}.pdf"
         cards_html.append(f"""
-        <div class="story-card" data-category="{cat_key}">
+        <div class="story-card" data-category="{cat_key}" data-id="{story_id}">
           <div class="card-img-wrapper">
             <span class="card-badge" style="background: {cat_color}">{cat_name}</span>
+            <button class="btn-card-bookmark" onclick="toggleBookmark('{story_id}', event)" title="မှတ်သားထားမည်" aria-label="Bookmark">☆</button>
+            <span class="card-read-badge" style="display: none;">✓ ဖတ်ပြီး</span>
             <img src="{s['img_web_path']}" alt="{meta.get('title_my', '')}" loading="lazy" />
           </div>
           <div class="card-body">
@@ -719,10 +923,17 @@ def generate_catalog_html(stories):
     </div>
 
     <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterCategory('all', this)">အားလုံး ({len(stories)})</button>
-      <button class="filter-btn" onclick="filterCategory('children', this)">ကလေးပုံပြင်များ</button>
-      <button class="filter-btn" onclick="filterCategory('folklore', this)">ရိုးရာနှင့် ဒဏ္ဍာရီများ</button>
-      <button class="filter-btn" onclick="filterCategory('contemporary', this)">ခေတ်ပေါ်ပုံပြင်များ</button>
+      <button class="filter-btn active" onclick="filterStories('all', this)">အားလုံး ({len(stories)})</button>
+      <button class="filter-btn" onclick="filterStories('children', this)">ကလေးပုံပြင်များ</button>
+      <button class="filter-btn" onclick="filterStories('folklore', this)">ရိုးရာနှင့် ဒဏ္ဍာရီများ</button>
+      <button class="filter-btn" onclick="filterStories('contemporary', this)">ခေတ်ပေါ်ပုံပြင်များ</button>
+      <button class="filter-btn" id="filter-btn-bookmarks" onclick="filterStories('bookmarks', this)">⭐ မှတ်သားထားသည် (<span id="bookmark-count">0</span>)</button>
+      <button class="filter-btn" id="filter-btn-unread" onclick="filterStories('unread', this)">📖 မဖတ်ရသေး</button>
+    </div>
+
+    <div id="empty-filter-msg" style="display: none; text-align: center; padding: 48px 16px; color: var(--text-muted);">
+      <p style="font-size: 1.25rem; margin-bottom: 8px;">📭 မည်သည့်ပုံပြင်မျှ မရှိသေးပါ။</p>
+      <p style="font-size: 0.95rem;">ကြိုက်နှစ်သက်သော ပုံပြင်များကို ⭐ နှိပ်၍ မှတ်သားထားနိုင်ပါသည်။</p>
     </div>
 
     <div class="story-grid">
@@ -742,6 +953,7 @@ def generate_catalog_html(stories):
 
 def generate_story_html(story):
     meta = story["meta"]
+    story_id = meta.get("id", story["slug"])
     body_html = render_markdown_to_html(story["body"])
     cat_key = story["category"]
     cat_name = CATEGORY_NAMES.get(cat_key, cat_key)
@@ -771,6 +983,9 @@ def generate_story_html(story):
   <header>
     <a href="../" class="brand-link">← ပုံပြင်များသို့ ပြန်သွားရန်</a>
     <div class="header-actions">
+      <button class="bookmark-btn" id="reader-bookmark-btn" data-id="{story_id}" onclick="toggleBookmark('{story_id}', event)" title="မှတ်သားမည်">
+        <span id="reader-star-icon">☆</span> <span class="bookmark-text">မှတ်သားမည်</span>
+      </button>
       <button class="font-btn" onclick="adjustFontSize(-0.1)" title="Smaller font">A-</button>
       <button class="font-btn" onclick="adjustFontSize(0.1)" title="Larger font">A+</button>
       <div class="theme-toggles">
@@ -812,7 +1027,10 @@ def generate_story_html(story):
     </div>
   </div>
 
-  <script>{READER_JS}</script>
+  <script>
+    {READER_JS}
+    markAsRead('{story_id}');
+  </script>
 </body>
 </html>
 """
