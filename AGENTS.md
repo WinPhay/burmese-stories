@@ -9,7 +9,7 @@
 
 ## 2. Language & Formatting Invariants
 - **Strict Unicode Standard**: All Burmese text must be compliant with Unicode 5.2+ standard (Pyidaungsu, Myanmar3, Noto Sans Myanmar). **Strictly zero Zawgyi encoding**.
-- **Idiomatic Tone**: Conversational, natural Burmese suitable for read-aloud storytelling. No machine-translated phrases, awkward formal phrasing, repetitive padding, or artificial vocabulary bloat.
+- **Living Oral Story Voice (STYLE.md)**: All stories must strictly adhere to [`STYLE.md`](STYLE.md). Use natural oral storytelling register (`ပုံပြင်ပြော စကားပြေ`), ban consecutive `...ခဲ့သည် / ...လေသည်` terminal runs, mandate living particles (`...ပေါ့ / ...ရှာတယ် / ...တော့တာပဲ`), and forbid academic/essay dialogue.
 - **YAML Frontmatter**: Every story file in `stories/<category>/` must include a complete frontmatter block conforming to `templates/story_template.md`.
 
 ---
@@ -43,8 +43,9 @@ Whenever drafting, expanding, or revising a story:
 - `stories/contemporary/` — `BS-###-<kebab-slug>.md`
 - `continuity/` — Anti-repetition logs (`lessons_matrix.md`, `character_roster.md`, `settings_index.md`).
 - `templates/` — Authoring templates (`story_template.md`).
+- `STYLE.md` — Literary style, voice cadence, and sensory language standard.
 - `assets/illustrations/` — Story-matched visual assets (`BS-###-<slug>.png`).
-- `scripts/` — Automated publication suite (`build_site.py`, `build_pdf.py`, `build_social.py`, `build_all.py`).
+- `scripts/` — Automated publication suite (`build_site.py`, `build_pdf.py`, `build_social.py`, `build_all.py`, `lint_voice.py`).
 - `.github/workflows/` — Automated GitHub Pages deployment pipeline (`deploy-pages.yml`).
 
 ---
@@ -59,6 +60,6 @@ Whenever drafting, expanding, or revising a story:
 ## 6. Verification Gate
 Before declaring any task complete or submitting for review, verify:
 ```bash
-test -f AGENTS.md && test -f CATALOG.md && test -f templates/story_template.md
+test -f AGENTS.md && test -f CATALOG.md && test -f STYLE.md && python3 scripts/lint_voice.py
 ```
-Ensure all created story files have valid YAML frontmatter, valid Unicode, and no unresolved placeholders (`[TODO]`, `<!-- ... -->`).
+Ensure all created story files have valid YAML frontmatter, valid Unicode, no unresolved placeholders (`[TODO]`, `<!-- ... -->`), and conform to `STYLE.md`.
