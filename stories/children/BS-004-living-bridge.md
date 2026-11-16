@@ -2,6 +2,7 @@
 id: "BS-004"
 title_my: "ပျားငယ် တူးတူးနှင့် ပုရွက်နီတို့၏ သက်ရှိတံတား"
 title_en: "Tu Tu the Little Bee and the Red Ants' Living Bridge"
+author: "Asap Money"
 category: "children"
 target_audience: "Ages 6-12"
 characters:

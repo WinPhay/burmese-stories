@@ -46,6 +46,8 @@ def build_pdf_for_story(md_path, chromium_bin):
     slug = md_path.stem
     title = meta.get("title_my", "")
     title_en = meta.get("title_en", "")
+    author = meta.get("author", "Asap Money")
+    created_at = meta.get("created_at", "")
     lesson = meta.get("lesson", "")
     category = meta.get("category", "children")
 
@@ -99,6 +101,7 @@ body {{
 }}
 
 .page {{
+  position: relative;
   width: 100%;
   height: 180mm;
   page-break-after: always;
@@ -106,6 +109,22 @@ body {{
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
+  overflow: hidden;
+}}
+
+.pdf-watermark {{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: 38pt;
+  font-weight: 800;
+  color: rgba(140, 150, 165, 0.07);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  letter-spacing: 5px;
+  z-index: 0;
 }}
 
 /* Page 1: Cover */
@@ -221,14 +240,19 @@ p {{
     <div><span class="channel-badge">📢 Telegram: @stellarpub_official</span></div>
     <h1>{title}</h1>
     <div class="subtitle">{title_en}</div>
+    <div class="meta-tag"><strong>စာရေးသူ:</strong> {author}</div>
     <div class="meta-tag"><strong>ID:</strong> {story_id} • <strong>ကဏ္ဍ:</strong> {category}</div>
     <div class="meta-tag"><strong>ပရိသတ်:</strong> {meta.get('target_audience', 'All Ages')}</div>
-    <div class="meta-tag"><strong>ထုတ်ဝေသည့်ရက်:</strong> {meta.get('created_at', '')}</div>
+    <div class="meta-tag"><strong>ထုတ်ဝေသည့်ရက်:</strong> {created_at}</div>
+    <div class="meta-tag" style="background: #fdf2e9; color: #7c2d12; border: 1px solid #fed7aa; font-size: 9.5pt;">
+      <strong>မူပိုင်ခွင့်:</strong> © 2026 {author} / StellarPub (@stellarpub_official) • CC BY-NC-ND 4.0
+    </div>
   </div>
 </div>
 
 <!-- Narrative Page -->
 <div class="page">
+  <div class="pdf-watermark">{author} • StellarPub</div>
   <div class="story-page">
 """
 
@@ -247,8 +271,8 @@ p {{
     </div>
   </div>
   <div class="footer">
-    <span>Burmese Stories Collection • https://winphay.github.io/burmese-stories/</span>
-    <span>Official Publication: @stellarpub_official</span>
+    <span>© 2026 {author} / StellarPub (@stellarpub_official) • CC BY-NC-ND 4.0 • စာရေးသူ: {author} ({created_at})</span>
+    <span>Burmese Stories • https://winphay.github.io/burmese-stories/</span>
   </div>
 </div>
 

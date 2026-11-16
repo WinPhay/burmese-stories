@@ -2,6 +2,7 @@
 id: "BS-001"
 title_my: "နှုတ်ခမ်းနီငှက်ကလေး ဖိုးတိုးနှင့် တိမ်မိုးရေဗူး"
 title_en: "Phoe Toe the Red-Beaked Bird and the Cloud Water Gourd"
+author: "Asap Money"
 category: "children"
 target_audience: "Ages 6-10"
 characters:

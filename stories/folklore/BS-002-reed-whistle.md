@@ -2,6 +2,7 @@
 id: "BS-002"
 title_my: "မြစ်ကမ်းပါးက နှီးကြမ်းလေချွန်သံ"
 title_en: "The Reed Whistle by the Riverbank"
+author: "Asap Money"
 category: "folklore"
 target_audience: "All Ages"
 characters:

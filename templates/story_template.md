@@ -2,6 +2,7 @@
 id: "BS-000"
 title_my: "ပုံပြင်ခေါင်းစဉ်"
 title_en: "Story Title in English"
+author: "Asap Money"
 category: "children" # children | folklore | contemporary
 target_audience: "Ages 6-12" # Ages 4-8 | Ages 6-12 | Young Adult | All Ages
 characters:

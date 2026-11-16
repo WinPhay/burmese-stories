@@ -484,6 +484,55 @@ header {
   flex-wrap: wrap;
 }
 
+.watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: clamp(2rem, 7vw, 4.5rem);
+  font-weight: 800;
+  color: var(--text-main);
+  opacity: 0.035;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+  letter-spacing: 4px;
+}
+
+.copyright-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-top: 36px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  text-align: center;
+}
+.copyright-box strong {
+  color: var(--text-main);
+}
+.copyright-box a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 32px 16px 40px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  margin-top: 48px;
+}
+.site-footer a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
 /* Mobile Breakpoints & Responsive Adaptations */
 @media (max-width: 680px) {
   header {
@@ -609,6 +658,8 @@ def generate_catalog_html(stories):
         cat_key = s["category"]
         cat_name = CATEGORY_NAMES.get(cat_key, cat_key)
         cat_color = CATEGORY_COLORS.get(cat_key, "#333")
+        author = meta.get("author", "Asap Money")
+        created_at = meta.get("created_at", "")
         
         pdf_filename = f"{s['slug']}.pdf" if s['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{s['slug']}.pdf"
         cards_html.append(f"""
@@ -619,7 +670,9 @@ def generate_catalog_html(stories):
           </div>
           <div class="card-body">
             <h3>{meta.get('title_my', '')}</h3>
-            <div class="card-meta">{meta.get('title_en', '')} • {meta.get('target_audience', 'All Ages')}</div>
+            <div class="card-meta">
+              ✍️ <strong>{author}</strong> • 📅 {created_at} • 🎯 {meta.get('target_audience', 'All Ages')}
+            </div>
             <div class="card-lesson-preview">{meta.get('lesson', '')}</div>
             <div class="card-actions">
               <a href="stories/{s['slug']}.html" class="btn-read">ဖတ်ရှုရန်</a>
@@ -675,6 +728,11 @@ def generate_catalog_html(stories):
     <div class="story-grid">
       {''.join(cards_html)}
     </div>
+
+    <footer class="site-footer">
+      <p>မူပိုင်ခွင့် © 2026 <strong>Asap Money</strong> / StellarPub (@stellarpub_official)။ All rights reserved.</p>
+      <p>ဤပုံပြင်များကို <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">Creative Commons CC BY-NC-ND 4.0</a> ဖြင့် ထုတ်ဝေဖြန့်ချိပါသည်။ • Channel: <a href="https://t.me/stellarpub_official" target="_blank">@stellarpub_official</a></p>
+    </footer>
   </div>
 
   <script>{READER_JS}</script>
@@ -688,6 +746,9 @@ def generate_story_html(story):
     cat_key = story["category"]
     cat_name = CATEGORY_NAMES.get(cat_key, cat_key)
     cat_color = CATEGORY_COLORS.get(cat_key, "#333")
+    author = meta.get("author", "Asap Money")
+    created_at = meta.get("created_at", "")
+    pub_year = created_at[:4] if len(created_at) >= 4 else "2026"
     pdf_filename = f"{story['slug']}.pdf" if story['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{story['slug']}.pdf"
 
     return f"""<!DOCTYPE html>
@@ -705,6 +766,8 @@ def generate_story_html(story):
   <style>{BASE_CSS}</style>
 </head>
 <body>
+  <div class="watermark">{author} • StellarPub</div>
+
   <header>
     <a href="../" class="brand-link">← ပုံပြင်များသို့ ပြန်သွားရန်</a>
     <div class="header-actions">
@@ -725,7 +788,7 @@ def generate_story_html(story):
       </span>
       <h1 class="reader-title">{meta.get('title_my', '')}</h1>
       <div class="reader-meta">
-        {meta.get('title_en', '')} • {meta.get('target_audience', 'All Ages')}
+        ✍️ ဖန်တီးရေးသားသူ: <strong>{author}</strong> • 📅 ထုတ်ဝေသည့်ရက်: <strong>{created_at}</strong> • 🎯 ပရိသတ်: <strong>{meta.get('target_audience', 'All Ages')}</strong>
       </div>
     </div>
 
@@ -733,6 +796,11 @@ def generate_story_html(story):
 
     <div class="reader-content">
       {body_html}
+    </div>
+
+    <div class="copyright-box">
+      <p><strong>မူပိုင်ခွင့် © {pub_year} {author} / StellarPub (@stellarpub_official)</strong></p>
+      <p>ဤမူရင်းပုံပြင်နှင့် သရုပ်ဖော်ပုံများကို <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">Creative Commons CC BY-NC-ND 4.0</a> အောက်တွင် လွတ်လပ်စွာ မျှဝေဖတ်ရှုနိုင်ပါသည်။ စီးပွားဖြစ် ကူးယူရောင်းချခြင်း မပြုရ။</p>
     </div>
 
     <div class="reader-footer">

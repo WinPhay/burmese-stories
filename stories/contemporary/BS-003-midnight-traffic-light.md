@@ -2,6 +2,7 @@
 id: "BS-003"
 title_my: "ညသန်းခေါင် မီးပွိုင့်နှင့် စက်ရုပ်ငယ်"
 title_en: "The Midnight Traffic Light and the Little Robot"
+author: "Asap Money"
 category: "contemporary"
 target_audience: "Youth / All Ages"
 characters:
