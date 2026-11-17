@@ -19,3 +19,5 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 | **ဦးကျိုင်း** | U Kyaing | Animal (Praying mantis / Elder) | Traditional, skeptical, rigid, aloof | `BS-004` | `children` |
 | **ဦးဘိုးလွင်** | U Poe Lwin | Human (Master potter / Elder) | Skilled, proud, rushed, impatient | `BS-005` | `folklore` |
 | **မောင်သာဒင်** | Maung Tha Din | Human (Apprentice potter / Youth) | Observant, patient, meticulous, humble | `BS-005` | `folklore` |
+| **မောင်ခုံး** | Maung Khone | Animal (Giant clam) | Fearful, guarded, resilient, reflective | `BS-006` | `children` |
+| **ဖိုးခရု** | Phoe Kha Yu | Animal (Hermit conch) | Wise, weathered, encouraging, observant | `BS-006` | `children` |
