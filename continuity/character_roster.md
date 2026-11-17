@@ -17,3 +17,5 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 | **တူးတူး** | Tu Tu | Animal (Scout bee) | Observant, agile, open-minded, cooperative | `BS-004` | `children` |
 | **ဖိုးနီ** | Phoe Ni | Animal (Red ant leader) | Disciplined, strong, pragmatic, grounded | `BS-004` | `children` |
 | **ဦးကျိုင်း** | U Kyaing | Animal (Praying mantis / Elder) | Traditional, skeptical, rigid, aloof | `BS-004` | `children` |
+| **ဦးဘိုးလွင်** | U Poe Lwin | Human (Master potter / Elder) | Skilled, proud, rushed, impatient | `BS-005` | `folklore` |
+| **မောင်သာဒင်** | Maung Tha Din | Human (Apprentice potter / Youth) | Observant, patient, meticulous, humble | `BS-005` | `folklore` |

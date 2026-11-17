@@ -11,3 +11,4 @@ Cycle settings regularly (forest, village, river, lake, mountain, farmland, city
 | **မြစ်မကြီးကမ်းနားက ရွာဟောင်းနှင့် လေပြင်းမုန်တိုင်း** | Major riverbank & storm | Monsoon-end riverbank, heavy reed beds, timber house, violent storm | `BS-002` | `folklore` |
 | **ရန်ကုန်မြို့လယ် လမ်းဆုံမီးပွိုင့်** | Urban crossroads / Night city | Midnight light rain, quiet intersection, reflective asphalt, red lights | `BS-003` | `contemporary` |
 | **ရွှေနွယ်စမ်းချောင်းကမ်းနဖူးနှင့် မိုးခိုရာ ကျောက်ဂူပန်းခြံ** | Stream bank & limestone rock garden | Monsoon rainstorm, flooded stream bank, sheltered dry wild jasmine blossoms | `BS-004` | `children` |
+| **ချင်းတွင်းမြစ်ရိုး မြေနီကုန်းမြင့်နှင့် အိုးဖုတ်ဖိုဟောင်း** | Riverbank high ridge & pottery kiln | Dry river wind, earthenware pottery kiln, pre-monsoon storm clouds | `BS-005` | `folklore` |
