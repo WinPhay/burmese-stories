@@ -21,3 +21,5 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 | **မောင်သာဒင်** | Maung Tha Din | Human (Apprentice potter / Youth) | Observant, patient, meticulous, humble | `BS-005` | `folklore` |
 | **မောင်ခုံး** | Maung Khone | Animal (Giant clam) | Fearful, guarded, resilient, reflective | `BS-006` | `children` |
 | **ဖိုးခရု** | Phoe Kha Yu | Animal (Hermit conch) | Wise, weathered, encouraging, observant | `BS-006` | `children` |
+| **ဦးဘညွန့်** | U Ba Nyunt | Human (Master watchmaker / Elder) | Patient, precise, calm, observant, masterful | `BS-007` | `contemporary` |
+| **ကိုစိုးနိုင်** | Ko Soe Naing | Human (Apprentice watchmaker / Youth) | Impatient, hurried, tech-distracted, reflective | `BS-007` | `contemporary` |

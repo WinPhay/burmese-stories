@@ -13,3 +13,4 @@ Cycle settings regularly (forest, village, river, lake, mountain, farmland, city
 | **ရွှေနွယ်စမ်းချောင်းကမ်းနဖူးနှင့် မိုးခိုရာ ကျောက်ဂူပန်းခြံ** | Stream bank & limestone rock garden | Monsoon rainstorm, flooded stream bank, sheltered dry wild jasmine blossoms | `BS-004` | `children` |
 | **ချင်းတွင်းမြစ်ရိုး မြေနီကုန်းမြင့်နှင့် အိုးဖုတ်ဖိုဟောင်း** | Riverbank high ridge & pottery kiln | Dry river wind, earthenware pottery kiln, pre-monsoon storm clouds | `BS-005` | `folklore` |
 | **ရခိုင်ကမ်းရိုးတန်း သန္တာကျောက်တန်းနှင့် ပင်လယ်ရေအိုင်ငယ်** | Coastal reef & tidal rock pool | Clear turquoise water, colorful corals, sea anemones, tide pool | `BS-006` | `children` |
+| **မီးရထားဘူတာဟောင်းအနီးက နာရီပြင်ဆိုင်ငယ်** | Old railway station town & vintage repair shop | Warm lamplight, ticking antique clocks, brass gears, quiet dusk | `BS-007` | `contemporary` |
