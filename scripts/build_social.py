@@ -339,7 +339,7 @@ body {{
 </div>
 <div class="link-box">
   📖 ဇာတ်လမ်းအပြည့်အစုံ ဖတ်ရှုရန် & PDF ဒေါင်းလုဒ်:<br>
-  <strong>https://winphay.github.io/burmese-stories/stories/{slug}.html</strong>
+  <strong>https://stellarpub.celestrionx.com/stories/{slug}.html</strong>
 </div>
 </body>
 </html>
@@ -401,10 +401,10 @@ def generate_telegram_broadcast_markdown(stories):
 
 ─────────────────────
 🌟 ပုံပြင်အပြည့်အစုံကို Web တွင် သက်တောင့်သက်သာ ဖတ်ရှုရန်:
-🔗 https://winphay.github.io/burmese-stories/stories/{slug}.html
+🔗 https://stellarpub.celestrionx.com/stories/{slug}.html
 
 📄 A4 Print PDF ရယူရန်:
-🔗 https://winphay.github.io/burmese-stories/pdf/{pdf_name}
+🔗 https://stellarpub.celestrionx.com/pdf/{pdf_name}
 
 📢 Telegram Channel: @stellarpub_official
 #BurmeseStories #မြန်မာပုံပြင်များ #{meta.get('category', 'story')} #StellarPub

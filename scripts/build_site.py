@@ -1059,6 +1059,13 @@ def main():
         story_html = generate_story_html(s)
         (DIST_SITE / "stories" / f"{s['slug']}.html").write_text(story_html, encoding="utf-8")
         
+    # Write CNAME for custom domain
+    cname_file = REPO_ROOT / "CNAME"
+    if cname_file.exists():
+        shutil.copy(cname_file, DIST_SITE / "CNAME")
+    else:
+        (DIST_SITE / "CNAME").write_text("stellarpub.celestrionx.com\n", encoding="utf-8")
+
     print(f"Web reader successfully generated at {DIST_SITE}")
 
 if __name__ == "__main__":

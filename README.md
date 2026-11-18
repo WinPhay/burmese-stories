@@ -6,7 +6,7 @@
 
 ## 1. Catalog & Reading Guide
 
-- **Live Web Reader**: [https://winphay.github.io/burmese-stories/](https://winphay.github.io/burmese-stories/)
+- **Live Web Reader**: [https://stellarpub.celestrionx.com/](https://stellarpub.celestrionx.com/)
 - **Official Telegram Channel**: [@stellarpub_official](https://t.me/stellarpub_official)
 - **Master Index**: [CATALOG.md](CATALOG.md)
 

@@ -5,3 +5,8 @@ dist/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Secrets & Local Environment
+.env
+.env.*
+!.env.example
