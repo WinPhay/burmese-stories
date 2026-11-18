@@ -23,3 +23,13 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 | **ဖိုးခရု** | Phoe Kha Yu | Animal (Hermit conch) | Wise, weathered, encouraging, observant | `BS-006` | `children` |
 | **ဦးဘညွန့်** | U Ba Nyunt | Human (Master watchmaker / Elder) | Patient, precise, calm, observant, masterful | `BS-007` | `contemporary` |
 | **ကိုစိုးနိုင်** | Ko Soe Naing | Human (Apprentice watchmaker / Youth) | Impatient, hurried, tech-distracted, reflective | `BS-007` | `contemporary` |
+| **ဦးဘိုးသန်း** | U Phoe Than | Human (Wealthy landlord / Elder) | Miserly, isolated, regretful, awakened | `BS-008` | `folklore` |
+| **အဘိုးဦးသာဒင်** | U Tha Din | Human (Lantern keeper / Elder) | Selfless, patient, quiet, dedicated | `BS-009` | `folklore` |
+| **မောင်ရွှေမျောက်** | Maung Shwe Myauk | Animal (Fragrant monkey) | Cheerful, innocent, misled, remorseful | `BS-010` | `children` |
+| **ဗလ** | Bala | Animal (Tiger cub) | Brave, curious, growing, determined | `BS-011` | `children` |
+| **ဖိုးတွန်** | Phoe Twan | Animal (Rooster) | Proud, vigilant, hasty, learning | `BS-012` | `children` |
+| **ဖိုးကျောက်** | Phoe Kyauk | Animal (Little monkey) | Playful, vain, impulsive, humble | `BS-013` | `children` |
+| **ဖိုးခုန်** | Phoe Khone | Animal (Little frog) | Curious, eager, observant, thoughtful | `BS-014` | `children` |
+| **ဖိုးကောက်** | Phoe Kauk | Animal (Little fox) | Suspicious, sharp, investigative, fair | `BS-015` | `children` |
+| **မောင်ညို** | Maung Nyo | Animal (Young deer) | Compassionate, grateful, selfless, unifier | `BS-016` | `children` |
+| **ဖိုးဖြူ** | Phoe Phyu | Animal (White rabbit) | Kind-hearted, generous, boundary-setting | `BS-017` | `children` |
