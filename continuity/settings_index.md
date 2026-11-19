@@ -24,3 +24,4 @@ Cycle settings regularly (forest, village, river, lake, mountain, farmland, city
 | **သစ်ခေါင်းဟောင်းနှင့် သစ်တောလမ်းဆုံ** | Hollowed trunk & crossroad | Shady forest canopy, wild beehives, woodland trails | `BS-015` | `children` |
 | **မုန်တိုင်းထန်သော သစ်ပင်အိုကြီးရိပ်** | Ancient sheltered banyan tree | Heavy torrential monsoon, sprawling protective branches | `BS-016` | `children` |
 | **မုန်လာဥခင်းနှင့် သစ်တောအစွန်** | Wild carrot meadow & burrow | Sunny clover glade, wildflower patches, sandy burrow edge | `BS-017` | `children` |
+| **တောင်ခြေရွာကလေးနှင့် အိုနိဂါရှီးမား ဘီလူးကျွန်း** | Japanese foothills & Ogre Island (Onigashima) | Misty mountain village, flowing stream, crashing sea coast, fortified stone fortress | `BS-018` | `folklore` |

@@ -33,3 +33,5 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 | **ဖိုးကောက်** | Phoe Kauk | Animal (Little fox) | Suspicious, sharp, investigative, fair | `BS-015` | `children` |
 | **မောင်ညို** | Maung Nyo | Animal (Young deer) | Compassionate, grateful, selfless, unifier | `BS-016` | `children` |
 | **ဖိုးဖြူ** | Phoe Phyu | Animal (White rabbit) | Kind-hearted, generous, boundary-setting | `BS-017` | `children` |
+| **မိုမိုတာရို** | Momotaro | Folk Hero (Peach boy) | Brave, compassionate, unifier, decisive | `BS-018` | `folklore` |
+| **တောခွေးကြီး၊ မျောက်ကလေး၊ ရစ်ငှက်ကြီး** | Animal Companions | Animals (Dog, Monkey, Pheasant) | Loyal, clever, vigilant, cooperative | `BS-018` | `folklore` |
