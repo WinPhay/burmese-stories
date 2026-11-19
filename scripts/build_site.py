@@ -1046,6 +1046,11 @@ def main():
     
     # Copy assets
     shutil.copytree(ASSETS_DIR, DIST_SITE / "assets")
+
+    # Copy DLC assets if present
+    dlc_src = REPO_ROOT / "dlc"
+    if dlc_src.exists():
+        shutil.copytree(dlc_src, DIST_SITE / "dlc")
     
     stories = get_stories()
     print(f"Loaded {len(stories)} stories.")

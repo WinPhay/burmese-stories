@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "updated_at": "2026-11-19T10:30:00Z",
+  "stories": [
+    {
+      "id": "BS-018",
+      "slug": "BS-018-momotaro-peach-boy",
+      "title_my": "မိုမိုတာရို (မက်မွန်သီးမှ မွေးဖွားသော သူရဲကောင်းလေး)",
+      "title_en": "Momotaro: The Peach Boy",
+      "author": "ConfusedShark",
+      "category": "folklore",
+      "target_audience": "Ages 6-12",
+      "pck_url": "https://stellarpub.celestrionx.com/dlc/BS-018.pck",
+      "pck_size_bytes": 1945936,
+      "pck_size_display": "1.9 MB",
+      "sha256": "de21d5a4a1ccc17dc3ae4cb48dc9567e254b8a7698539bfaa406794a6576d357",
+      "is_free": true,
+      "cover_asset": "res://stories/BS-018/assets/cover.png",
+      "cover_color": "#2c3e50"
+    },
+    {
+      "id": "BS-001",
+      "slug": "BS-001-phoe-toe-cloud-water",
+      "title_my": "နှုတ်ခမ်းနီငှက်ကလေး ဖိုးတိုးနှင့် တိမ်မိုးရေဗူး",
+      "title_en": "Phoe Toe the Red-Beaked Bird",
+      "author": "Asap Money",
+      "category": "children",
+      "target_audience": "Ages 6-10",
+      "pck_url": "https://stellarpub.celestrionx.com/dlc/BS-001.pck",
+      "pck_size_bytes": 5242880,
+      "pck_size_display": "5.2 MB",
+      "sha256": "",
+      "is_free": true,
+      "cover_color": "#16a085"
+    },
+    {
+      "id": "BS-007",
+      "slug": "BS-007-watchmaker-second-hand",
+      "title_my": "နာရီပြင်ဆရာကြီး ဦးဘညွန့်နှင့် စက္ကန့်လက်တံ၏ လျှို့ဝှက်ချက်",
+      "title_en": "The Old Watchmaker U Ba Nyunt",
+      "author": "Asap Money",
+      "category": "contemporary",
+      "target_audience": "Youth / All Ages",
+      "pck_url": "https://stellarpub.celestrionx.com/dlc/BS-007.pck",
+      "pck_size_bytes": 6291456,
+      "pck_size_display": "6.3 MB",
+      "sha256": "",
+      "is_free": true,
+      "cover_color": "#8e44ad"
+    }
+  ]
+}
