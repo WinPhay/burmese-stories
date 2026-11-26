@@ -534,6 +534,30 @@ header {
   object-fit: cover;
 }
 
+.audio-player-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.audio-player-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+.audio-player-box audio {
+  flex: 1;
+  min-width: 220px;
+  height: 36px;
+}
+
 .reader-content p {
   font-size: var(--font-size, 1.15rem);
   line-height: 2.05;
@@ -893,6 +917,8 @@ def generate_catalog_html(stories):
         author = meta.get("author", "Asap Money")
         label = meta.get("label", "").strip()
         aigc_card_badge = f'<span class="card-aigc-badge">✨ {label}</span>' if label else ""
+        has_audio = (ASSETS_DIR / "audio" / f"{story_id}.mp3").exists()
+        audio_meta_tag = " • 🎧 အသံပါ" if has_audio else ""
         created_at = meta.get("created_at", "")
         
         pdf_filename = f"{s['slug']}.pdf" if s['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{s['slug']}.pdf"
@@ -908,7 +934,7 @@ def generate_catalog_html(stories):
           <div class="card-body">
             <h3>{meta.get('title_my', '')}</h3>
             <div class="card-meta">
-              ✍️ <strong>{author}</strong> • 📅 {created_at} • 🎯 {meta.get('target_audience', 'All Ages')}
+              ✍️ <strong>{author}</strong> • 📅 {created_at} • 🎯 {meta.get('target_audience', 'All Ages')}{audio_meta_tag}
             </div>
             <div class="card-lesson-preview">{meta.get('lesson', '')}</div>
             <div class="card-actions">
@@ -994,6 +1020,15 @@ def generate_story_html(story):
     author = meta.get("author", "Asap Money")
     label = meta.get("label", "").strip()
     aigc_reader_badge = f'<span class="reader-aigc-badge">✨ {label}</span>' if label else ""
+    has_audio = (ASSETS_DIR / "audio" / f"{story_id}.mp3").exists()
+    audio_player_html = (
+        f'<div class="audio-player-box">'
+        f'<div class="audio-player-label">🎧 အသံဖြင့် နားဆင်ရန်</div>'
+        f'<audio controls preload="none" src="../assets/audio/{story_id}.mp3"></audio>'
+        f'</div>'
+        if has_audio
+        else ""
+    )
     created_at = meta.get("created_at", "")
     pub_year = created_at[:4] if len(created_at) >= 4 else "2026"
     pdf_filename = f"{story['slug']}.pdf" if story['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{story['slug']}.pdf"
@@ -1043,6 +1078,8 @@ def generate_story_html(story):
     </div>
 
     <img src="../{story['img_web_path']}" alt="{meta.get('title_my', '')}" class="reader-cover" />
+
+    {audio_player_html}
 
     <div class="reader-content">
       {body_html}

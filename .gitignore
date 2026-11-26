@@ -1,5 +1,6 @@
 # Build outputs & artifacts
 dist/
+assets/audio/
 .temp_*
 .tmp_*
 __pycache__/

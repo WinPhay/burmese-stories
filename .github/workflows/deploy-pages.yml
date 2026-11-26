@@ -32,6 +32,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y chromium-browser fonts-noto-core fonts-noto-extra fonts-noto-cjk
 
+      - name: Hydrate Audio Assets from GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p assets/audio
+          gh release download audio-v1 -D assets/audio -p '*.mp3' --clobber || true
+
       - name: Build Publication Suite (Site, PDFs, Social)
         run: |
           python3 scripts/build_all.py
