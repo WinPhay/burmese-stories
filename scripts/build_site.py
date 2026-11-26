@@ -954,6 +954,8 @@ def generate_catalog_html(stories):
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>မြန်မာပုံပြင်များ — Burmese Stories Collection</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
   <meta name="description" content="ကလေးလူငယ်များနှင့် မိဘဆရာများအတွက် အသိပညာပေး မူရင်းမြန်မာပုံပြင်များ">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1042,6 +1044,8 @@ def generate_story_html(story):
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>{meta.get('title_my', '')} — မြန်မာပုံပြင်များ</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1118,6 +1122,10 @@ def main():
     
     # Copy assets
     shutil.copytree(ASSETS_DIR, DIST_SITE / "assets")
+    for icon_name in ("favicon.ico", "favicon.svg"):
+        icon_src = ASSETS_DIR / icon_name
+        if icon_src.exists():
+            shutil.copy(icon_src, DIST_SITE / icon_name)
 
     # Copy DLC assets if present
     dlc_src = REPO_ROOT / "dlc"
