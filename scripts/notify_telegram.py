@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 Telegram Channel Notification CLI for Burmese Stories
-Zero-dependency script to broadcast story notifications and cover artwork to Telegram channels,
-with exe.io story URL shortening.
+Zero-dependency script to broadcast story notifications and cover artwork to Telegram channels.
 """
 
 import argparse
@@ -11,7 +10,6 @@ import json
 import os
 import re
 import sys
-import urllib.parse
 import urllib.request
 import uuid
 from pathlib import Path
@@ -97,24 +95,9 @@ def find_illustration(story):
     return None
 
 
-def shorten_url_exe_io(long_url, api_key):
-    """Shorten a URL using the exe.io developer API (https://exe.io/tools/developer-api)."""
-    params = urllib.parse.urlencode({
-        "api": api_key,
-        "url": long_url,
-        "format": "json",
-    })
-    api_url = f"https://exe.io/api?{params}"
-    req = urllib.request.Request(api_url, headers={"User-Agent": "BurmeseStories-Notifier/1.0"})
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
-    if data.get("status") != "success" or not data.get("shortenedUrl"):
-        raise RuntimeError(f"exe.io API error: {data.get('message', data)}")
-    return data["shortenedUrl"]
-
-
-def build_telegram_caption(story, story_url):
+def build_telegram_caption(story):
     meta = story["meta"]
+    slug = story["slug"]
     story_id = story["id"]
     title_my = html.escape(meta.get("title_my", "ခေါင်းစဉ်မဲ့ ပုံပြင်"))
     title_en = html.escape(meta.get("title_en", ""))
@@ -122,7 +105,7 @@ def build_telegram_caption(story, story_url):
     cat_label = CATEGORY_NAMES.get(category, category)
     target_audience = html.escape(meta.get("target_audience", "All Ages"))
     lesson = html.escape(meta.get("lesson", ""))
-    safe_url = html.escape(story_url)
+    story_url = html.escape(f"https://stellarpub.celestrionx.com/stories/{slug}.html")
 
     title_en_line = f"<i>{title_en}</i>\n" if title_en else ""
 
@@ -134,7 +117,7 @@ def build_telegram_caption(story, story_url):
         f"« {lesson} »\n\n"
         f"─────────────────────\n"
         f"📖 <b>Web တွင် ဖတ်ရှုရန်:</b>\n"
-        f"🔗 {safe_url}\n\n"
+        f"🔗 {story_url}\n\n"
         f"📢 Telegram Channel: @stellarpub_official\n"
         f"#BurmeseStories #မြန်မာပုံပြင်များ #{category} #StellarPub"
     )
@@ -203,15 +186,7 @@ def main():
     group.add_argument("--list", action="store_true", help="List all available stories")
 
     parser.add_argument("--dry-run", action="store_true", help="Preview notification without calling Telegram API")
-    parser.add_argument("--shorten-preview", action="store_true", help="Call exe.io during --dry-run to preview shortened link")
-    parser.add_argument("--no-shorten", action="store_true", help="Skip exe.io shortening and use direct story URL")
     parser.add_argument("--token", type=str, default=os.environ.get("TELEGRAM_BOT_TOKEN"), help="Telegram Bot Token")
-    parser.add_argument(
-        "--exe-token",
-        type=str,
-        default=os.environ.get("EXE_IO_API_KEY") or os.environ.get("EXE_IO_API_TOKEN"),
-        help="exe.io Developer API Token",
-    )
     parser.add_argument(
         "--chat-id",
         "--channel",
@@ -242,39 +217,20 @@ def main():
             sys.exit(1)
         target = matched[0]
 
-    long_url = f"https://stellarpub.celestrionx.com/stories/{target['slug']}.html"
-    if args.no_shorten:
-        story_url = long_url
-    elif args.dry_run and not args.shorten_preview:
-        story_url = long_url
-    else:
-        if not args.exe_token:
-            print("\nError: exe.io API token missing.", file=sys.stderr)
-            print("Provide via --exe-token, EXE_IO_API_KEY env variable, or .env file (or pass --no-shorten).", file=sys.stderr)
-            sys.exit(1)
-        try:
-            story_url = shorten_url_exe_io(long_url, args.exe_token)
-        except Exception as e:
-            print(f"❌ exe.io Shortener Error: {e}", file=sys.stderr)
-            sys.exit(1)
-
     photo_path = find_illustration(target)
-    caption = build_telegram_caption(target, story_url)
+    caption = build_telegram_caption(target)
 
     print("==================================================")
     print(f"Target Story : {target['id']} — {target['meta'].get('title_my')}")
     print(f"Channel      : {args.chat_id}")
-    print(f"Story URL    : {story_url}")
     print(f"Illustration : {photo_path if photo_path else 'None (text-only fallback)'}")
     print("==================================================")
 
     if args.dry_run:
-        if not args.no_shorten and not args.shorten_preview:
-            print("[DRY RUN] exe.io shortening skipped (pass --shorten-preview to test live API).")
         print("\n--- [DRY RUN: Telegram HTML Caption Preview] ---")
         print(caption)
         print("-------------------------------------------------")
-        print("\n[DRY RUN] No Telegram API request dispatched. Payload verified successfully.")
+        print("\n[DRY RUN] No API request dispatched. Payload verified successfully.")
         sys.exit(0)
 
     if not args.token:
