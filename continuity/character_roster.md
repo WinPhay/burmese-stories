@@ -35,3 +35,6 @@ Vary character types across human, animal, celestial, nature, robotic, and imagi
 | **ဖိုးဖြူ** | Phoe Phyu | Animal (White rabbit) | Kind-hearted, generous, boundary-setting | `BS-017` | `children` |
 | **မိုမိုတာရို** | Momotaro | Folk Hero (Peach boy) | Brave, compassionate, unifier, decisive | `BS-018` | `folklore` |
 | **တောခွေးကြီး၊ မျောက်ကလေး၊ ရစ်ငှက်ကြီး** | Animal Companions | Animals (Dog, Monkey, Pheasant) | Loyal, clever, vigilant, cooperative | `BS-018` | `folklore` |
+| **ကိုလှိုင်** | Ko Hlaing | Human (Apprentice Puppeteer / Youth) | Passionate, trembling wrist, empathetic, expressive | `BS-019` | `folklore` |
+| **ဦးတင်အောင်** | U Tin Aung | Human (Master Puppeteer / Elder) | Pragmatic, experienced, discerning, supportive | `BS-019` | `folklore` |
+| **မောင်ဝင်း** | Maung Win | Human (Apprentice Puppeteer / Youth) | Steady-handed, precise, proud, observant | `BS-019` | `folklore` |

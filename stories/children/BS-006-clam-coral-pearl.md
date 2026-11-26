@@ -3,6 +3,7 @@ id: "BS-006"
 title_my: "သန္တာကျောက်တန်းက ယောက်သွားခုံးနှင့် ခရုညို"
 title_en: "The Coral Clam and the Wandering Hermit Conch"
 author: "Asap Money"
+label: "AIGC"
 category: "children"
 target_audience: "Ages 6-12"
 characters:

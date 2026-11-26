@@ -3,6 +3,7 @@ id: "BS-007"
 title_my: "နာရီပြင်ဆရာကြီး ဦးဘညွန့်နှင့် စက္ကန့်လက်တံ၏ လျှို့ဝှက်ချက်"
 title_en: "The Old Watchmaker U Ba Nyunt and the Secret of the Second Hand"
 author: "Asap Money"
+label: "AIGC"
 category: "contemporary"
 target_audience: "Youth / All Ages"
 characters:

@@ -3,6 +3,7 @@ id: "BS-005"
 title_my: "အိုးထိန်းသည် ဦးဘိုးလွင်နှင့် မီးခိုးငွေ့ကြားက အက်ကြောင်း"
 title_en: "The Potter U Poe Lwin and the Crack in the Smoke"
 author: "Asap Money"
+label: "AIGC"
 category: "folklore"
 target_audience: "All Ages"
 characters:

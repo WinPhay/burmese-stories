@@ -379,6 +379,36 @@ header {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
+.card-aigc-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #fef3c7;
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.reader-aigc-badge {
+  display: inline-block;
+  background: #1e293b;
+  color: #fef3c7;
+  border: 1px solid #f59e0b;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 .bookmark-btn {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -861,6 +891,8 @@ def generate_catalog_html(stories):
         cat_name = CATEGORY_NAMES.get(cat_key, cat_key)
         cat_color = CATEGORY_COLORS.get(cat_key, "#333")
         author = meta.get("author", "Asap Money")
+        label = meta.get("label", "").strip()
+        aigc_card_badge = f'<span class="card-aigc-badge">✨ {label}</span>' if label else ""
         created_at = meta.get("created_at", "")
         
         pdf_filename = f"{s['slug']}.pdf" if s['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{s['slug']}.pdf"
@@ -870,6 +902,7 @@ def generate_catalog_html(stories):
             <span class="card-badge" style="background: {cat_color}">{cat_name}</span>
             <button class="btn-card-bookmark" onclick="toggleBookmark('{story_id}', event)" title="မှတ်သားထားမည်" aria-label="Bookmark">☆</button>
             <span class="card-read-badge" style="display: none;">✓ ဖတ်ပြီး</span>
+            {aigc_card_badge}
             <img src="{s['img_web_path']}" alt="{meta.get('title_my', '')}" loading="lazy" />
           </div>
           <div class="card-body">
@@ -959,6 +992,8 @@ def generate_story_html(story):
     cat_name = CATEGORY_NAMES.get(cat_key, cat_key)
     cat_color = CATEGORY_COLORS.get(cat_key, "#333")
     author = meta.get("author", "Asap Money")
+    label = meta.get("label", "").strip()
+    aigc_reader_badge = f'<span class="reader-aigc-badge">✨ {label}</span>' if label else ""
     created_at = meta.get("created_at", "")
     pub_year = created_at[:4] if len(created_at) >= 4 else "2026"
     pdf_filename = f"{story['slug']}.pdf" if story['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{story['slug']}.pdf"
@@ -1000,7 +1035,7 @@ def generate_story_html(story):
     <div class="reader-header">
       <span style="background: {cat_color}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">
         {cat_name}
-      </span>
+      </span>{aigc_reader_badge}
       <h1 class="reader-title">{meta.get('title_my', '')}</h1>
       <div class="reader-meta">
         ✍️ ဖန်တီးရေးသားသူ: <strong>{author}</strong> • 📅 ထုတ်ဝေသည့်ရက်: <strong>{created_at}</strong> • 🎯 ပရိသတ်: <strong>{meta.get('target_audience', 'All Ages')}</strong>

@@ -47,6 +47,8 @@ def build_pdf_for_story(md_path, chromium_bin):
     title = meta.get("title_my", "")
     title_en = meta.get("title_en", "")
     author = meta.get("author", "Asap Money")
+    label = meta.get("label", "").strip()
+    aigc_badge_html = f'<span class="aigc-badge">✨ {label}</span>' if label else ""
     created_at = meta.get("created_at", "")
     lesson = meta.get("lesson", "")
     category = meta.get("category", "children")
@@ -174,6 +176,18 @@ body {{
   font-weight: bold;
   margin-bottom: 20px;
 }}
+.aigc-badge {{
+  display: inline-block;
+  background: #1e293b;
+  color: #fef3c7;
+  border: 1px solid #f59e0b;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 10pt;
+  font-weight: bold;
+  margin-left: 8px;
+  margin-bottom: 20px;
+}}
 h1 {{
   font-size: 26pt;
   color: #8b2500;
@@ -232,7 +246,7 @@ p {{
     <img src="{img_url}" />
   </div>
   <div class="cover-text-box">
-    <div><span class="channel-badge">📢 Telegram: @stellarpub_official</span></div>
+    <div><span class="channel-badge">📢 Telegram: @stellarpub_official</span>{aigc_badge_html}</div>
     <h1>{title}</h1>
     <div class="subtitle">{title_en}</div>
     <div class="meta-tag"><strong>စာရေးသူ:</strong> {author}</div>
