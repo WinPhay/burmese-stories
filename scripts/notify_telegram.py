@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """
 Telegram Channel Notification CLI for Burmese Stories
-Zero-dependency script to broadcast story notifications and cover artwork to Telegram channels.
+Zero-dependency script to broadcast story notifications and cover artwork to Telegram channels,
+with exe.io story URL shortening.
 """
 
+import argparse
+import html
+import json
 import os
 import re
 import sys
-import json
-import uuid
-import argparse
-import urllib.request
 import urllib.parse
+import urllib.request
+import uuid
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -25,6 +27,7 @@ CATEGORY_NAMES = {
     "folklore": "ရိုးရာဒဏ္ဍာရီ",
     "contemporary": "ခေတ်ပေါ်ပုံပြင်",
 }
+
 
 def load_env_file():
     """Load key-value pairs from .env into os.environ if present."""
@@ -41,6 +44,7 @@ def load_env_file():
             if key not in os.environ:
                 os.environ[key] = val
 
+
 def parse_frontmatter(content):
     match = re.match(r"^---\n(.*?)\n---\n(.*)$", content, re.DOTALL)
     if not match:
@@ -55,6 +59,7 @@ def parse_frontmatter(content):
             key, val = line.split(":", 1)
             meta[key.strip()] = val.strip().strip('"').strip("'")
     return meta, body
+
 
 def get_all_stories():
     stories = []
@@ -71,41 +76,57 @@ def get_all_stories():
             "path": md_file,
             "meta": meta,
             "body": body,
-            "slug": md_file.stem
+            "slug": md_file.stem,
         })
     stories.sort(key=lambda s: s["id"])
     return stories
 
+
 def find_illustration(story):
-    # 1. Search markdown body image syntax
     img_match = re.search(r"!\[.*?\]\((.*?)\)", story["body"])
     if img_match:
         img_rel = img_match.group(1)
         img_path = (story["path"].parent / img_rel).resolve()
         if img_path.exists():
             return img_path
-    
-    # 2. Search assets/illustrations by ID
+
     for candidate in ASSETS_DIR.glob(f"{story['id']}*"):
         if candidate.is_file() and candidate.suffix.lower() in [".png", ".jpg", ".jpeg"]:
             return candidate
-            
+
     return None
 
-def build_telegram_caption(story):
+
+def shorten_url_exe_io(long_url, api_key):
+    """Shorten a URL using the exe.io developer API (https://exe.io/tools/developer-api)."""
+    params = urllib.parse.urlencode({
+        "api": api_key,
+        "url": long_url,
+        "format": "json",
+    })
+    api_url = f"https://exe.io/api?{params}"
+    req = urllib.request.Request(api_url, headers={"User-Agent": "BurmeseStories-Notifier/1.0"})
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        data = json.loads(resp.read().decode("utf-8"))
+    if data.get("status") != "success" or not data.get("shortenedUrl"):
+        raise RuntimeError(f"exe.io API error: {data.get('message', data)}")
+    return data["shortenedUrl"]
+
+
+def build_telegram_caption(story, story_url):
     meta = story["meta"]
-    slug = story["slug"]
     story_id = story["id"]
-    title_my = meta.get("title_my", "ခေါင်းစဉ်မဲ့ ပုံပြင်")
-    title_en = meta.get("title_en", "")
+    title_my = html.escape(meta.get("title_my", "ခေါင်းစဉ်မဲ့ ပုံပြင်"))
+    title_en = html.escape(meta.get("title_en", ""))
     category = meta.get("category", "children")
     cat_label = CATEGORY_NAMES.get(category, category)
-    target_audience = meta.get("target_audience", "All Ages")
-    lesson = meta.get("lesson", "")
+    target_audience = html.escape(meta.get("target_audience", "All Ages"))
+    lesson = html.escape(meta.get("lesson", ""))
+    safe_url = html.escape(story_url)
 
     title_en_line = f"<i>{title_en}</i>\n" if title_en else ""
-    
-    caption = (
+
+    return (
         f"✨ <b>{title_my}</b> ({story_id})\n"
         f"{title_en_line}"
         f"🏷️ အမျိုးအစား: <b>{cat_label}</b> | {target_audience}\n\n"
@@ -113,25 +134,23 @@ def build_telegram_caption(story):
         f"« {lesson} »\n\n"
         f"─────────────────────\n"
         f"📖 <b>Web တွင် ဖတ်ရှုရန်:</b>\n"
-        f"🔗 https://stellarpub.celestrionx.com/stories/{slug}.html\n\n"
-        f"📄 <b>A4 Print PDF ရယူရန်:</b>\n"
-        f"🔗 https://stellarpub.celestrionx.com/pdf/{slug}.pdf\n\n"
+        f"🔗 {safe_url}\n\n"
         f"📢 Telegram Channel: @stellarpub_official\n"
         f"#BurmeseStories #မြန်မာပုံပြင်များ #{category} #StellarPub"
     )
-    return caption
+
 
 def send_telegram_photo(token, chat_id, photo_path, caption):
     url = f"https://api.telegram.org/bot{token}/sendPhoto"
     boundary = f"----WebKitFormBoundary{uuid.uuid4().hex}"
-    
+
     body = bytearray()
-    
+
     def add_field(name, value):
         body.extend(f"--{boundary}\r\n".encode("utf-8"))
         body.extend(f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode("utf-8"))
         body.extend(f"{value}\r\n".encode("utf-8"))
-        
+
     def add_file(name, filepath):
         filename = filepath.name
         mime = "image/png" if filename.lower().endswith(".png") else "image/jpeg"
@@ -140,20 +159,21 @@ def send_telegram_photo(token, chat_id, photo_path, caption):
         body.extend(f"Content-Type: {mime}\r\n\r\n".encode("utf-8"))
         body.extend(filepath.read_bytes())
         body.extend(b"\r\n")
-        
+
     add_field("chat_id", chat_id)
     add_field("caption", caption)
     add_field("parse_mode", "HTML")
     add_file("photo", photo_path)
     body.extend(f"--{boundary}--\r\n".encode("utf-8"))
-    
+
     req = urllib.request.Request(
         url,
         data=bytes(body),
-        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"}
+        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
     )
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read().decode("utf-8"))
+
 
 def send_telegram_message(token, chat_id, text):
     url = f"https://api.telegram.org/bot{token}/sendMessage"
@@ -161,16 +181,17 @@ def send_telegram_message(token, chat_id, text):
         "chat_id": chat_id,
         "text": text,
         "parse_mode": "HTML",
-        "disable_web_page_preview": False
+        "disable_web_page_preview": False,
     }
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         url,
         data=data,
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=30) as resp:
         return json.loads(resp.read().decode("utf-8"))
+
 
 def main():
     load_env_file()
@@ -181,9 +202,23 @@ def main():
     group.add_argument("--story", type=str, help="Story ID to broadcast (e.g. BS-007)")
     group.add_argument("--list", action="store_true", help="List all available stories")
 
-    parser.add_argument("--dry-run", action="store_true", help="Preview notification without calling API")
+    parser.add_argument("--dry-run", action="store_true", help="Preview notification without calling Telegram API")
+    parser.add_argument("--shorten-preview", action="store_true", help="Call exe.io during --dry-run to preview shortened link")
+    parser.add_argument("--no-shorten", action="store_true", help="Skip exe.io shortening and use direct story URL")
     parser.add_argument("--token", type=str, default=os.environ.get("TELEGRAM_BOT_TOKEN"), help="Telegram Bot Token")
-    parser.add_argument("--chat-id", "--channel", type=str, default=os.environ.get("TELEGRAM_CHAT_ID", "@stellarpub_official"), help="Target Channel (@name or -100...)")
+    parser.add_argument(
+        "--exe-token",
+        type=str,
+        default=os.environ.get("EXE_IO_API_KEY") or os.environ.get("EXE_IO_API_TOKEN"),
+        help="exe.io Developer API Token",
+    )
+    parser.add_argument(
+        "--chat-id",
+        "--channel",
+        type=str,
+        default=os.environ.get("TELEGRAM_CHAT_ID", "@stellarpub_official"),
+        help="Target Channel (@name or -100...)",
+    )
 
     args = parser.parse_args()
 
@@ -207,20 +242,39 @@ def main():
             sys.exit(1)
         target = matched[0]
 
+    long_url = f"https://stellarpub.celestrionx.com/stories/{target['slug']}.html"
+    if args.no_shorten:
+        story_url = long_url
+    elif args.dry_run and not args.shorten_preview:
+        story_url = long_url
+    else:
+        if not args.exe_token:
+            print("\nError: exe.io API token missing.", file=sys.stderr)
+            print("Provide via --exe-token, EXE_IO_API_KEY env variable, or .env file (or pass --no-shorten).", file=sys.stderr)
+            sys.exit(1)
+        try:
+            story_url = shorten_url_exe_io(long_url, args.exe_token)
+        except Exception as e:
+            print(f"❌ exe.io Shortener Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
     photo_path = find_illustration(target)
-    caption = build_telegram_caption(target)
+    caption = build_telegram_caption(target, story_url)
 
     print("==================================================")
     print(f"Target Story : {target['id']} — {target['meta'].get('title_my')}")
     print(f"Channel      : {args.chat_id}")
+    print(f"Story URL    : {story_url}")
     print(f"Illustration : {photo_path if photo_path else 'None (text-only fallback)'}")
     print("==================================================")
 
     if args.dry_run:
+        if not args.no_shorten and not args.shorten_preview:
+            print("[DRY RUN] exe.io shortening skipped (pass --shorten-preview to test live API).")
         print("\n--- [DRY RUN: Telegram HTML Caption Preview] ---")
         print(caption)
         print("-------------------------------------------------")
-        print("\n[DRY RUN] No API request dispatched. Payload verified successfully.")
+        print("\n[DRY RUN] No Telegram API request dispatched. Payload verified successfully.")
         sys.exit(0)
 
     if not args.token:
@@ -244,6 +298,7 @@ def main():
     except Exception as e:
         print(f"❌ Network/Dispatch Error: {e}", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
