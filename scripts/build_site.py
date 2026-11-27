@@ -8,8 +8,14 @@ import os
 import re
 import json
 import shutil
+from html import escape as html_escape
 from pathlib import Path
 from xml.sax.saxutils import escape as xml_escape
+
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STORIES_DIR = REPO_ROOT / "stories"
@@ -23,9 +29,9 @@ CATEGORY_NAMES = {
 }
 
 CATEGORY_COLORS = {
-    "children": "#e67e22",
-    "folklore": "#27ae60",
-    "contemporary": "#2980b9",
+    "children": "#b45309",
+    "folklore": "#15803d",
+    "contemporary": "#1d4ed8",
 }
 
 def parse_frontmatter(content):
@@ -119,7 +125,7 @@ BASE_CSS = """
   --bg-card: #ffffff;
   --text-main: #2c3e50;
   --text-muted: #64748b;
-  --accent-color: #d35400;
+  --accent-color: #c2410c;
   --border-color: #e2e8f0;
   --header-bg: rgba(253, 251, 247, 0.95);
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
@@ -343,8 +349,8 @@ header {
   -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -369,7 +375,7 @@ header {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  background: rgba(16, 185, 129, 0.95);
+  background: rgba(4, 120, 87, 0.95);
   color: white;
   font-size: 0.72rem;
   font-weight: 700;
@@ -528,6 +534,7 @@ header {
 
 .reader-cover {
   width: 100%;
+  height: auto;
   border-radius: 16px;
   box-shadow: var(--shadow-md);
   margin-bottom: 28px;
@@ -687,8 +694,8 @@ header {
   }
   .theme-btn, .font-btn {
     padding: 4px 8px;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 40px;
+    min-height: 40px;
     font-size: 0.85rem;
   }
   .bookmark-btn .bookmark-text {
@@ -696,8 +703,8 @@ header {
   }
   .bookmark-btn {
     padding: 4px 8px;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 40px;
+    min-height: 40px;
     font-size: 0.85rem;
   }
   .story-grid {
@@ -907,9 +914,44 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 """
 
-def generate_catalog_html(stories):
+FONT_LINKS_HTML = """  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet"></noscript>"""
+
+
+def optimize_illustrations(dist_illustrations_dir):
+    """Build 640w card and full-size WebP variants in dist; fallback to PNG if Pillow missing."""
+    variants = {}
+    if not dist_illustrations_dir.exists():
+        return variants
+    for png_path in sorted(dist_illustrations_dir.glob("*.png")):
+        rel_png = f"assets/illustrations/{png_path.name}"
+        if Image is None:
+            variants[rel_png] = {"card": rel_png, "reader": rel_png, "w": 1200, "h": 896, "cw": 640, "ch": 478}
+            continue
+        with Image.open(png_path) as im:
+            w, h = im.size
+            rgb = im.convert("RGB") if im.mode not in ("RGB", "RGBA") else im
+            reader_name = f"{png_path.stem}.webp"
+            card_name = f"{png_path.stem}-640.webp"
+            rgb.save(dist_illustrations_dir / reader_name, "WEBP", quality=82, method=6)
+            cw = min(640, w)
+            ch = round(h * (cw / w))
+            card_im = rgb.resize((cw, ch), Image.Resampling.LANCZOS) if w > 640 else rgb
+            card_im.save(dist_illustrations_dir / card_name, "WEBP", quality=80, method=6)
+        png_path.unlink()
+        variants[rel_png] = {
+            "card": f"assets/illustrations/{card_name}",
+            "reader": f"assets/illustrations/{reader_name}",
+            "w": w, "h": h, "cw": cw, "ch": ch,
+        }
+    return variants
+
+
+def generate_catalog_html(stories, base_url, img_variants):
     cards_html = []
-    for s in stories:
+    for idx, s in enumerate(stories):
         meta = s["meta"]
         story_id = meta.get("id", s["slug"])
         cat_key = s["category"]
@@ -921,7 +963,9 @@ def generate_catalog_html(stories):
         has_audio = (ASSETS_DIR / "audio" / f"{story_id}.mp3").exists()
         audio_meta_tag = " • 🎧 အသံပါ" if has_audio else ""
         created_at = meta.get("created_at", "")
-        
+        iv = img_variants.get(s["img_web_path"], {"card": s["img_web_path"], "cw": 640, "ch": 478})
+        img_attrs = 'loading="eager" fetchpriority="high"' if idx == 0 else 'loading="lazy"'
+
         pdf_filename = f"{s['slug']}.pdf" if s['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{s['slug']}.pdf"
         cards_html.append(f"""
         <div class="story-card" data-category="{cat_key}" data-id="{story_id}">
@@ -930,7 +974,7 @@ def generate_catalog_html(stories):
             <button class="btn-card-bookmark" onclick="toggleBookmark('{story_id}', event)" title="မှတ်သားထားမည်" aria-label="Bookmark">☆</button>
             <span class="card-read-badge" style="display: none;">✓ ဖတ်ပြီး</span>
             {aigc_card_badge}
-            <img src="{s['img_web_path']}" alt="{meta.get('title_my', '')}" loading="lazy" />
+            <img src="{iv['card']}" alt="{html_escape(meta.get('title_my', ''), quote=True)}" width="{iv['cw']}" height="{iv['ch']}" {img_attrs} decoding="async" />
           </div>
           <div class="card-body">
             <h3>{meta.get('title_my', '')}</h3>
@@ -955,12 +999,11 @@ def generate_catalog_html(stories):
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>မြန်မာပုံပြင်များ — Burmese Stories Collection</title>
+  <link rel="canonical" href="{html_escape(base_url, quote=True)}/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <meta name="description" content="ကလေးလူငယ်များနှင့် မိဘဆရာများအတွက် အသိပညာပေး မူရင်းမြန်မာပုံပြင်များ">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
+{FONT_LINKS_HTML}
   <style>{BASE_CSS}</style>
 </head>
 <body>
@@ -1013,7 +1056,7 @@ def generate_catalog_html(stories):
 </html>
 """
 
-def generate_story_html(story):
+def generate_story_html(story, base_url, img_variants):
     meta = story["meta"]
     story_id = meta.get("id", story["slug"])
     body_html = render_markdown_to_html(story["body"])
@@ -1035,6 +1078,9 @@ def generate_story_html(story):
     created_at = meta.get("created_at", "")
     pub_year = created_at[:4] if len(created_at) >= 4 else "2026"
     pdf_filename = f"{story['slug']}.pdf" if story['slug'].startswith(meta.get('id', '')) else f"{meta.get('id')}-{story['slug']}.pdf"
+    iv = img_variants.get(story["img_web_path"], {"reader": story["img_web_path"], "w": 1200, "h": 896})
+    desc = html_escape(str(meta.get("lesson") or meta.get("title_my", "")), quote=True)
+    canonical = html_escape(f"{base_url}/stories/{story['slug']}.html", quote=True)
 
     return f"""<!DOCTYPE html>
 <html lang="my">
@@ -1045,11 +1091,11 @@ def generate_story_html(story):
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>{meta.get('title_my', '')} — မြန်မာပုံပြင်များ</title>
+  <meta name="description" content="{desc}">
+  <link rel="canonical" href="{canonical}">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
+{FONT_LINKS_HTML}
   <style>{BASE_CSS}</style>
 </head>
 <body>
@@ -1082,7 +1128,7 @@ def generate_story_html(story):
       </div>
     </div>
 
-    <img src="../{story['img_web_path']}" alt="{meta.get('title_my', '')}" class="reader-cover" />
+    <img src="../{iv['reader']}" alt="{html_escape(meta.get('title_my', ''), quote=True)}" width="{iv['w']}" height="{iv['h']}" loading="eager" fetchpriority="high" decoding="async" class="reader-cover" />
 
     {audio_player_html}
 
@@ -1149,8 +1195,9 @@ def main():
     (DIST_SITE / "stories").mkdir(parents=True, exist_ok=True)
     (DIST_SITE / "pdf").mkdir(parents=True, exist_ok=True)
     
-    # Copy assets
+    # Copy assets and build WebP variants
     shutil.copytree(ASSETS_DIR, DIST_SITE / "assets")
+    img_variants = optimize_illustrations(DIST_SITE / "assets" / "illustrations")
     for icon_name in ("favicon.ico", "favicon.svg"):
         icon_src = ASSETS_DIR / icon_name
         if icon_src.exists():
@@ -1160,20 +1207,8 @@ def main():
     dlc_src = REPO_ROOT / "dlc"
     if dlc_src.exists():
         shutil.copytree(dlc_src, DIST_SITE / "dlc")
-    
-    stories = get_stories()
-    print(f"Loaded {len(stories)} stories.")
-    
-    # Build index.html
-    index_html = generate_catalog_html(stories)
-    (DIST_SITE / "index.html").write_text(index_html, encoding="utf-8")
-    
-    # Build story pages
-    for s in stories:
-        story_html = generate_story_html(s)
-        (DIST_SITE / "stories" / f"{s['slug']}.html").write_text(story_html, encoding="utf-8")
-        
-    # Write CNAME for custom domain
+
+    # Resolve custom domain early for canonical + sitemap URLs
     cname_file = REPO_ROOT / "CNAME"
     if cname_file.exists():
         domain = cname_file.read_text(encoding="utf-8").strip() or "stellarpub.celestrionx.com"
@@ -1181,8 +1216,20 @@ def main():
     else:
         domain = "stellarpub.celestrionx.com"
         (DIST_SITE / "CNAME").write_text(f"{domain}\n", encoding="utf-8")
-
     base_url = f"https://{domain}"
+    
+    stories = get_stories()
+    print(f"Loaded {len(stories)} stories.")
+    
+    # Build index.html
+    index_html = generate_catalog_html(stories, base_url, img_variants)
+    (DIST_SITE / "index.html").write_text(index_html, encoding="utf-8")
+    
+    # Build story pages
+    for s in stories:
+        story_html = generate_story_html(s, base_url, img_variants)
+        (DIST_SITE / "stories" / f"{s['slug']}.html").write_text(story_html, encoding="utf-8")
+
     (DIST_SITE / "sitemap.xml").write_text(generate_sitemap_xml(stories, base_url), encoding="utf-8")
     (DIST_SITE / "robots.txt").write_text(generate_robots_txt(base_url), encoding="utf-8")
 

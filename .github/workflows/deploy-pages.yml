@@ -41,6 +41,7 @@ jobs:
 
       - name: Build Publication Suite (Site, PDFs, Social)
         run: |
+          python3 -m pip install --quiet pillow
           python3 scripts/build_all.py
 
       - name: Setup Pages
