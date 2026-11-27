@@ -9,6 +9,7 @@ import re
 import json
 import shutil
 from pathlib import Path
+from xml.sax.saxutils import escape as xml_escape
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STORIES_DIR = REPO_ROOT / "stories"
@@ -1111,6 +1112,34 @@ def generate_story_html(story):
 </html>
 """
 
+def generate_sitemap_xml(stories, base_url):
+    """Build XML sitemap for catalog root and all story pages."""
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        "  <url>",
+        f"    <loc>{xml_escape(base_url)}/</loc>",
+        "    <priority>1.0</priority>",
+        "  </url>",
+    ]
+    for s in stories:
+        loc = xml_escape(f"{base_url}/stories/{s['slug']}.html")
+        created_at = str(s["meta"].get("created_at", "")).strip()
+        lines.append("  <url>")
+        lines.append(f"    <loc>{loc}</loc>")
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", created_at):
+            lines.append(f"    <lastmod>{created_at}</lastmod>")
+        lines.append("    <priority>0.8</priority>")
+        lines.append("  </url>")
+    lines.append("</urlset>")
+    return "\n".join(lines) + "\n"
+
+
+def generate_robots_txt(base_url):
+    """Build robots.txt pointing crawlers to sitemap.xml."""
+    return f"User-agent: *\nAllow: /\n\nSitemap: {base_url}/sitemap.xml\n"
+
+
 def main():
     print("Building Web Reader...")
     # Prepare dist directory
@@ -1147,9 +1176,15 @@ def main():
     # Write CNAME for custom domain
     cname_file = REPO_ROOT / "CNAME"
     if cname_file.exists():
+        domain = cname_file.read_text(encoding="utf-8").strip() or "stellarpub.celestrionx.com"
         shutil.copy(cname_file, DIST_SITE / "CNAME")
     else:
-        (DIST_SITE / "CNAME").write_text("stellarpub.celestrionx.com\n", encoding="utf-8")
+        domain = "stellarpub.celestrionx.com"
+        (DIST_SITE / "CNAME").write_text(f"{domain}\n", encoding="utf-8")
+
+    base_url = f"https://{domain}"
+    (DIST_SITE / "sitemap.xml").write_text(generate_sitemap_xml(stories, base_url), encoding="utf-8")
+    (DIST_SITE / "robots.txt").write_text(generate_robots_txt(base_url), encoding="utf-8")
 
     print(f"Web reader successfully generated at {DIST_SITE}")
 
